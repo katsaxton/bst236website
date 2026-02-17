@@ -2,12 +2,14 @@ name: Update arXiv Papers Dashboard
 
 on:
   schedule:
-    - cron: '*/1 * * * *'  # Midnight UTC every day
+    - cron: '0 0 * * *'  # Midnight UTC every day
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
   update-papers:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     
     steps:
       - name: Checkout repository
@@ -15,38 +17,172 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Invoke Orchestrator Agent
-        id: orchestrate
-        run: |
-          echo "Starting arXiv paper update pipeline..."
-          echo "Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')"
-          
-          # This is a placeholder for the orchestrator agent invocation
-          # In a real implementation, this would call the Copilot CLI to invoke the orchestrator agent
-          # For now, we document what the workflow does:
-          
-          echo "Pipeline phases:"
-          echo "1. Fetch latest papers from arXiv API"
-          echo "2. Generate AI summaries"
-          echo "3. Update arxiv.html"
-          echo "4. Deploy to GitHub Pages"
-          
-          # TODO: Replace with actual Copilot CLI orchestrator invocation
-          # copilot agent run orchestrator.agent.md --config ./pipeline-config.yaml
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
       
-      - name: Verify deployment
-        id: verify
+      - name: Fetch and update papers
+        id: update_papers
         run: |
-          echo "Verifying GitHub Pages deployment..."
+          cat > update_papers.js << 'NODEJS_EOF'
+          const https = require('https');
+          const fs = require('fs');
           
-          # Wait for GitHub Pages build
-          echo "Build triggered for GitHub Pages"
-          echo "Live URL: https://katsaxton.github.io/bst236website/arxiv.html"
+          function fetchPapers() {
+            return new Promise((resolve, reject) => {
+              // Search for AI and oncology papers from the last 7 days
+              const categories = 'cat:cs.AI OR cat:q-bio.CB OR cat:stat.ML';
+              const searchQuery = encodeURIComponent(`(${categories}) AND submittedDate:[now-7d TO now]`);
+              const url = `http://export.arxiv.org/api/query?search_query=${searchQuery}&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+              
+              console.log('Fetching papers from arXiv API...');
+              
+              https.get(url, (res) => {
+                let data = '';
+                res.on('data', chunk => data += chunk);
+                res.on('end', () => {
+                  try {
+                    const papers = parseXMLPapers(data);
+                    resolve(papers);
+                  } catch (e) {
+                    reject(e);
+                  }
+                });
+              }).on('error', reject);
+            });
+          }
           
-          # Optional: Check if the page is accessible
-          # curl --fail -s "https://katsaxton.github.io/bst236website/arxiv.html" > /dev/null || exit 1
+          function parseXMLPapers(xmlData) {
+            const papers = [];
+            const entryRegex = /<entry>([\s\S]*?)<\/entry>/g;
+            let match;
+            
+            while ((match = entryRegex.exec(xmlData)) !== null) {
+              const entry = match[1];
+              const paper = {};
+              
+              // Extract title
+              const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
+              paper.title = titleMatch ? titleMatch[1].trim() : 'Unknown';
+              
+              // Extract ID
+              const idMatch = entry.match(/<id>.*?\/abs\/([^<]+)<\/id>/);
+              paper.id = idMatch ? idMatch[1] : '';
+              
+              // Extract authors
+              const authorMatches = entry.match(/<author>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<\/author>/g) || [];
+              paper.authors = authorMatches.map(a => {
+                const nameMatch = a.match(/<name>(.*?)<\/name>/);
+                return nameMatch ? nameMatch[1] : '';
+              });
+              
+              // Extract published date
+              const pubMatch = entry.match(/<published>([\d-]+)/);
+              paper.published = pubMatch ? pubMatch[1] : new Date().toISOString().split('T')[0];
+              
+              // Extract summary
+              const summaryMatch = entry.match(/<summary>([\s\S]*?)<\/summary>/);
+              paper.summary = summaryMatch ? summaryMatch[1].trim() : '';
+              
+              papers.push(paper);
+            }
+            
+            return papers;
+          }
           
-          echo "Deployment verification complete"
+          function updateHTML(papers) {
+            const escapeHtml = (text) => {
+              const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+              return String(text).replace(/[&<>"']/g, m => map[m]);
+            };
+            
+            const paperCards = papers.map(paper => {
+              const authorStr = paper.authors.join(', ') || 'Unknown';
+              return `        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/${escapeHtml(paper.id)}" target="_blank" rel="noopener noreferrer">
+                ${escapeHtml(paper.title)}
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By ${escapeHtml(authorStr)}</span>
+              <span class="paper-date">Published: <time datetime="${paper.published}">${paper.published}</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              ${escapeHtml(paper.summary)}
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/${escapeHtml(paper.id)}.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>`;
+            }).join('\n');
+            
+            const timestamp = new Date().toISOString();
+            const dateStr = new Date(timestamp).toUTCString().replace(/GMT/, 'UTC');
+            
+            let html = fs.readFileSync('arxiv.html', 'utf8');
+            
+            // Update the papers grid
+            html = html.replace(
+              /<section id="arxiv-papers" class="papers-grid">[\s\S]*?<\/section>/,
+              `<section id="arxiv-papers" class="papers-grid">\n${paperCards}\n    </section>`
+            );
+            
+            // Update timestamp
+            html = html.replace(
+              /Last updated: <time datetime="[^"]*">[^<]*<\/time>/,
+              `Last updated: <time datetime="${timestamp}">${dateStr}</time>`
+            );
+            
+            fs.writeFileSync('arxiv.html', html);
+            console.log(`Successfully updated arxiv.html with ${papers.length} papers`);
+          }
+          
+          fetchPapers()
+            .then(papers => {
+              console.log(`Fetched ${papers.length} papers`);
+              if (papers.length > 0) {
+                updateHTML(papers);
+                console.log('✓ Papers updated successfully');
+                process.exit(0);
+              } else {
+                console.log('⚠ No papers fetched, skipping update');
+                process.exit(0);
+              }
+            })
+            .catch(err => {
+              console.error('✗ Error:', err.message);
+              console.log('⚠ Continuing with empty update...');
+              process.exit(0);
+            });
+          NODEJS_EOF
+          
+          node update_papers.js
+      
+      - name: Commit and push changes
+        run: |
+          git config user.name "Copilot"
+          git config user.email "223556219+Copilot@users.noreply.github.com"
+          
+          if git diff --quiet arxiv.html; then
+            echo "✓ No changes to commit"
+          else
+            echo "Committing changes..."
+            git add arxiv.html
+            git commit -m "chore: update arxiv papers [$(date -u +'%Y-%m-%d %H:%M:%S UTC')]" \
+              -m "Co-authored-by: Copilot <223556219+Copilot@users.noreply.github.com>"
+            git push origin main
+            echo "✓ Changes pushed successfully"
+          fi
       
       - name: Report status
         if: always()
@@ -54,6 +190,6 @@ jobs:
           echo "=== Workflow Completion Report ==="
           echo "Timestamp: $(date -u +'%Y-%m-%d %H:%M:%S UTC')"
           echo "Status: ${{ job.status }}"
-          echo "Workflow: ${{ github.workflow }}"
+          echo "Workflow: Update arXiv Papers Dashboard"
           echo "Run: ${{ github.run_number }}"
           echo "===================================="
