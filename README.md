@@ -176,7 +176,7 @@ The homepage was created using responsive HTML/CSS without JavaScript. The desig
 
 **Approach**: Simple, semantic HTML structure with clean CSS for styling and responsiveness.
 
-**Prompt**: The following prompt was provided to Copilot CLI to create the website and intiate the development of the arXiv paper feed:
+**Prompt**: The following prompt was provided to Copilot CLI to create the website and initiate the development of the arXiv paper feed:
 
 You are an AI System Architect. I am building a "A Personal Website" project that uses a Terminal-based Copilot to orchestrate a data pipeline.
 
@@ -301,28 +301,7 @@ Built a fully automated system using the **agentic programming paradigm**:
 - **Current Papers**: 10 latest from AI/ML/computational biology categories
 - **Features**: Full paper details, PDF links, responsive design, auto-refresh timestamp
 
----
-
-## Contributions
-
-**Team Size**: Solo project by Kathryn Saxton
-
-**Role**: Full Stack Developer
-- ✅ Designed and built responsive homepage (HTML/CSS)
-- ✅ Implemented Pac-Man game with heart projectiles (JavaScript)
-- ✅ Architected arXiv auto-update system (Node.js + GitHub Actions)
-- ✅ Configured dual repository sync (git config)
-- ✅ Troubleshot workflow scheduling and HTML generation issues
-- ✅ Wrote comprehensive documentation and README
-
-**AI Tools Used**:
-- **GitHub Copilot CLI**: Primary coding assistant for scaffolding, debugging, and implementation
-- **Custom Agents**: Orchestrator, game-controller, arxiv-fetcher, deployer agents
-- **Prompt Engineering**: Iteratively refined prompts for robustness and clarity
-
----
-
-## Architecture
+#### Architecture
 
 ### 4 Autonomous Agents
 1. **Orchestrator Agent** - Coordinates the entire pipeline, manages phase transitions, handles error recovery
@@ -380,6 +359,29 @@ Built a fully automated system using the **agentic programming paradigm**:
 ```
 
 ---
+
+---
+
+## Contributions
+
+**Team Size**: Solo project by Kathryn Saxton
+
+**Role**: Full Stack Developer
+- ✅ Designed and built responsive homepage (HTML/CSS)
+- ✅ Implemented Pac-Man game with heart projectiles (JavaScript)
+- ✅ Architected arXiv auto-update system (Node.js + GitHub Actions)
+- ✅ Configured dual repository sync (git config)
+- ✅ Troubleshot workflow scheduling and HTML generation issues
+- ✅ Wrote comprehensive documentation and README
+
+**AI Tools Used**:
+- **GitHub Copilot CLI**: Primary coding assistant for scaffolding, debugging, and implementation
+- **Custom Agents**: Orchestrator, game-controller, arxiv-fetcher, deployer agents
+- **Prompt Engineering**: Iteratively refined prompts for robustness and clarity
+
+---
+
+
 
 
 
