@@ -33,7 +33,7 @@
       <h1>Latest Research Papers</h1>
       <p class="subtitle">Oncology and Artificial Intelligence</p>
       <p class="updated-at">
-        Last updated: <time datetime="2026-02-17T14:29:40.764Z">Tue, 17 Feb 2026 14:29:40 UTC</time>
+        Last updated: <time datetime="2026-02-17T16:16:57.969Z">Tue, 17 Feb 2026 16:16:57 UTC</time>
       </p>
     </section>
     
@@ -56,6 +56,240 @@
               Large language models (LLMs) are increasingly deployed in privacy-critical and personalization-oriented scenarios, yet the role of context length in shaping privacy leakage and personalization effectiveness remains largely unexplored. We introduce a large-scale benchmark, PAPerBench, to systematically study how increasing context length influences both personalization quality and privacy protection in LLMs. The benchmark comprises approximately 29,000 instances with context lengths ranging from 1K to 256K tokens, yielding a total of 377K evaluation questions. It jointly evaluates personalization performance and privacy risks across diverse scenarios, enabling controlled analysis of long-context model behavior. Extensive evaluations across state-of-the-art LLMs reveal consistent performance degradation in both personalization and privacy as context length increases. We further provide a theoretical analysis of attention dilution under context scaling, explaining this behavior as an inherent limitation of soft attention in fixed-capacity Transformers. The empirical and theoretical findings together suggest a general scaling gap in current models -- long context, less focus. We release the benchmark to support reproducible evaluation and future research on scalable privacy and personalization. Code and data are available at https://github.com/SafeRL-Lab/PAPerBench
             </p>
           </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.15028v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.15022v1" target="_blank" rel="noopener noreferrer">
+                Rethinking Diffusion Models with Symmetries through Canonicalization with Applications to Molecular Graph Generation
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Cai Zhou, Zijie Chen, Zian Li, Jike Wang, Kaiyi Jiang, Pan Li, Rose Yu, Muhan Zhang, Stephen Bates, Tommi Jaakkola</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Many generative tasks in chemistry and science involve distributions invariant to group symmetries (e.g., permutation and rotation). A common strategy enforces invariance and equivariance through architectural constraints such as equivariant denoisers and invariant priors. In this paper, we challenge this tradition through the alternative canonicalization perspective: first map each sample to an orbit representative with a canonical pose or order, train an unconstrained (non-equivariant) diffusion or flow model on the canonical slice, and finally recover the invariant distribution by sampling a random symmetry transform at generation time. Building on a formal quotient-space perspective, our work provides a comprehensive theory of canonical diffusion by proving: (i) the correctness, universality and superior expressivity of canonical generative models over invariant targets; (ii) canonicalization accelerates training by removing diffusion score complexity induced by group mixtures and reducing conditional variance in flow matching. We then show that aligned priors and optimal transport act complementarily with canonicalization and further improves training efficiency. We instantiate the framework for molecular graph generation under $S_n \times SE(3)$ symmetries. By leveraging geometric spectra-based canonicalization and mild positional encodings, canonical diffusion significantly outperforms equivariant baselines in 3D molecule generation tasks, with similar or even less computation. Moreover, with a novel architecture Canon, CanonFlow achieves state-of-the-art performance on the challenging GEOM-DRUG dataset, and the advantage remains large in few-step generation.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.15022v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.15019v1" target="_blank" rel="noopener noreferrer">
+                Hunt Globally: Deep Research AI Agents for Drug Asset Scouting in Investing, Business Development, and Search &amp;amp; Evaluation
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Alisa Vinogradova, Vlad Vinogradov, Luba Greenwood, Ilya Yasny, Dmitry Kobyzev, Shoman Kasbekar, Kong Nguyen, Dmitrii Radkevich, Roman Doronin, Andrey Doronichev</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Bio-pharmaceutical innovation has shifted: many new drug assets now originate outside the United States and are disclosed primarily via regional, non-English channels. Recent data suggests &amp;gt;85% of patent filings originate outside the U.S., with China accounting for nearly half of the global total; a growing share of scholarly output is also non-U.S. Industry estimates put China at ~30% of global drug development, spanning 1,200+ novel candidates. In this high-stakes environment, failing to surface &quot;under-the-radar&quot; assets creates multi-billion-dollar risk for investors and business development teams, making asset scouting a coverage-critical competition where speed and completeness drive value. Yet today&#039;s Deep Research AI agents still lag human experts in achieving high-recall discovery across heterogeneous, multilingual sources without hallucinations.
+  We propose a benchmarking methodology for drug asset scouting and a tuned, tree-based self-learning Bioptic Agent aimed at complete, non-hallucinated scouting. We construct a challenging completeness benchmark using a multilingual multi-agent pipeline: complex user queries paired with ground-truth assets that are largely outside U.S.-centric radar. To reflect real deal complexity, we collected screening queries from expert investors, BD, and VC professionals and used them as priors to conditionally generate benchmark queries. For grading, we use LLM-as-judge evaluation calibrated to expert opinions. We compare Bioptic Agent against Claude Opus 4.6, OpenAI GPT-5.2 Pro, Perplexity Deep Research, Gemini 3 Pro + Deep Research, and Exa Websets. Bioptic Agent achieves 79.7% F1 versus 56.2% (Claude Opus 4.6), 50.6% (Gemini 3 Pro + Deep Research), 46.6% (GPT-5.2 Pro), 44.2% (Perplexity Deep Research), and 26.9% (Exa Websets). Performance improves steeply with additional compute, supporting the view that more compute yields better results.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.15019v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.15012v1" target="_blank" rel="noopener noreferrer">
+                Cold-Start Personalization via Training-Free Priors from Structured World Models
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Avinandan Bose, Shuyue Stella Li, Faeze Brahman, Pang Wei Koh, Simon Shaolei Du, Yulia Tsvetkov, Maryam Fazel, Lin Xiao, Asli Celikyilmaz</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Cold-start personalization requires inferring user preferences through interaction when no user-specific historical data is available. The core challenge is a routing problem: each task admits dozens of preference dimensions, yet individual users care about only a few, and which ones matter depends on who is asking. With a limited question budget, asking without structure will miss the dimensions that matter. Reinforcement learning is the natural formulation, but in multi-turn settings its terminal reward fails to exploit the factored, per-criterion structure of preference data, and in practice learned policies collapse to static question sequences that ignore user responses. We propose decomposing cold-start elicitation into offline structure learning and online Bayesian inference. Pep (Preference Elicitation with Priors) learns a structured world model of preference correlations offline from complete profiles, then performs training-free Bayesian inference online to select informative questions and predict complete preference profiles, including dimensions never asked about. The framework is modular across downstream solvers and requires only simple belief models. Across medical, mathematical, social, and commonsense reasoning, Pep achieves 80.8% alignment between generated responses and users&#039; stated preferences versus 68.5% for RL, with 3-5x fewer interactions. When two users give different answers to the same question, Pep changes its follow-up 39-62% of the time versus 0-28% for RL. It does so with ~10K parameters versus 8B for RL, showing that the bottleneck in cold-start elicitation is the capability to exploit the factored structure of preference data.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.15012v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.15008v1" target="_blank" rel="noopener noreferrer">
+                Efficient Sampling with Discrete Diffusion Models: Sharp and Adaptive Guarantees
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Daniil Dmitriev, Zhihan Huang, Yuting Wei</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Diffusion models over discrete spaces have recently shown striking empirical success, yet their theoretical foundations remain incomplete. In this paper, we study the sampling efficiency of score-based discrete diffusion models under a continuous-time Markov chain (CTMC) formulation, with a focus on $τ$-leaping-based samplers. We establish sharp convergence guarantees for attaining $\varepsilon$ accuracy in Kullback-Leibler (KL) divergence for both uniform and masking noising processes. For uniform discrete diffusion, we show that the $τ$-leaping algorithm achieves an iteration complexity of order $\tilde O(d/\varepsilon)$, with $d$ the ambient dimension of the target distribution, eliminating linear dependence on the vocabulary size $S$ and improving existing bounds by a factor of $d$; moreover, we establish a matching algorithmic lower bound showing that linear dependence on the ambient dimension is unavoidable in general. For masking discrete diffusion, we introduce a modified $τ$-leaping sampler whose convergence rate is governed by an intrinsic information-theoretic quantity, termed the effective total correlation, which is bounded by $d \log S$ but can be sublinear or even constant for structured data. As a consequence, the sampler provably adapts to low-dimensional structure without prior knowledge or algorithmic modification, yielding sublinear convergence rates for various practical examples (such as hidden Markov models, image data, and random graphs). Our analysis requires no boundedness or smoothness assumptions on the score estimator beyond control of the score entropy loss.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.15008v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.14997v1" target="_blank" rel="noopener noreferrer">
+                Spectral Convolution on Orbifolds for Geometric Deep Learning
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Tim Mangliers, Bernhard Mössner, Benjamin Himpel</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Geometric deep learning (GDL) deals with supervised learning on data domains that go beyond Euclidean structure, such as data with graph or manifold structure. Due to the demand that arises from application-related data, there is a need to identify further topological and geometric structures with which these use cases can be made accessible to machine learning. There are various techniques, such as spectral convolution, that form the basic building blocks for some convolutional neural network-like architectures on non-Euclidean data. In this paper, the concept of spectral convolution on orbifolds is introduced. This provides a building block for making learning on orbifold structured data accessible using GDL. The theory discussed is illustrated using an example from music theory.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.14997v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.14994v1" target="_blank" rel="noopener noreferrer">
+                On the Semantics of Primary Cause in Hybrid Dynamic Domains
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Shakil M. Khan, Asim Mehmood, Sandra Zilles</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Reasoning about actual causes of observed effects is fundamental to the study of rationality. This important problem has been studied since the time of Aristotle, with formal mathematical accounts emerging recently. We live in a world where change due to actions can be both discrete and continuous, that is, hybrid. Yet, despite extensive research on actual causation, only few recent studies looked into causation with continuous change. Building on recent progress, in this paper we propose two definitions of primary cause in a hybrid action-theoretic framework, namely the hybrid temporal situation calculus. One of these is foundational in nature while the other formalizes causation through contributions, which can then be verified from a counterfactual perspective using a modified ``but-for&#039;&#039; test. We prove that these two definitions are indeed equivalent. We then show that our definitions of causation have some intuitively justifiable properties.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.14994v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.14989v1" target="_blank" rel="noopener noreferrer">
+                ThermEval: A Structured Benchmark for Evaluation of Vision-Language Models on Thermal Imagery
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Ayush Shrivastava, Kirtan Gangani, Laksh Jain, Mayank Goel, Nipun Batra</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Vision language models (VLMs) achieve strong performance on RGB imagery, but they do not generalize to thermal images. Thermal sensing plays a critical role in settings where visible light fails, including nighttime surveillance, search and rescue, autonomous driving, and medical screening. Unlike RGB imagery, thermal images encode physical temperature rather than color or texture, requiring perceptual and reasoning capabilities that existing RGB-centric benchmarks do not evaluate. We introduce ThermEval-B, a structured benchmark of approximately 55,000 thermal visual question answering pairs designed to assess the foundational primitives required for thermal vision language understanding. ThermEval-B integrates public datasets with our newly collected ThermEval-D, the first dataset to provide dense per-pixel temperature maps with semantic body-part annotations across diverse indoor and outdoor environments. Evaluating 25 open-source and closed-source VLMs, we find that models consistently fail at temperature-grounded reasoning, degrade under colormap transformations, and default to language priors or fixed responses, with only marginal gains from prompting or supervised fine-tuning. These results demonstrate that thermal understanding requires dedicated evaluation beyond RGB-centric assumptions, positioning ThermEval as a benchmark to drive progress in thermal vision language modeling.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.14989v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.14981v1" target="_blank" rel="noopener noreferrer">
+                Block Empirical Likelihood Inference for Longitudinal Generalized Partially Linear Single-Index Models
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Tianni Zhang, Yuyao Wang, Yu Lu, and Mengfei Ran</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Generalized partially linear single-index models (GPLSIMs) provide a flexible and interpretable semiparametric framework for longitudinal outcomes by combining a low-dimensional parametric component with a nonparametric index component. For repeated measurements, valid inference is challenging because within-subject correlation induces nuisance parameters and variance estimation can be unstable in semiparametric settings. We propose a profile estimating-equation approach based on spline approximation of the unknown link function and construct a subject-level block empirical likelihood (BEL) for joint inference on the parametric coefficients and the single-index direction. The resulting BEL ratio statistic enjoys a Wilks-type chi-square limit, yielding likelihood-free confidence regions without explicit sandwich variance estimation. We also discuss practical implementation, including constrained optimization for the index parameter, working-correlation choices, and bootstrap-based confidence bands for the nonparametric component. Simulation studies and an application to the epilepsy longitudinal study illustrate the finite-sample performance.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.14981v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+        <article class="paper-card">
+          <header class="paper-header">
+            <h3 class="paper-title">
+              <a href="https://arxiv.org/abs/2602.14968v1" target="_blank" rel="noopener noreferrer">
+                PhyScensis: Physics-Augmented LLM Agents for Complex Physical Scene Arrangement
+              </a>
+            </h3>
+            <div class="paper-meta">
+              <span class="paper-authors">By Yian Wang, Han Yang, Minghao Guo, Xiaowen Qiu, Tsun-Hsuan Wang, Wojciech Matusik, Joshua B. Tenenbaum, Chuang Gan</span>
+              <span class="paper-date">Published: <time datetime="2026-02-16">2026-02-16</time></span>
+            </div>
+          </header>
+          
+          <section class="paper-body">
+            <p class="paper-summary">
+              Automatically generating interactive 3D environments is crucial for scaling up robotic data collection in simulation. While prior work has primarily focused on 3D asset placement, it often overlooks the physical relationships between objects (e.g., contact, support, balance, and containment), which are essential for creating complex and realistic manipulation scenarios such as tabletop arrangements, shelf organization, or box packing. Compared to classical 3D layout generation, producing complex physical scenes introduces additional challenges: (a) higher object density and complexity (e.g., a small shelf may hold dozens of books), (b) richer supporting relationships and compact spatial layouts, and (c) the need to accurately model both spatial placement and physical properties. To address these challenges, we propose PhyScensis, an LLM agent-based framework powered by a physics engine, to produce physically plausible scene configurations with high complexity. Specifically, our framework consists of three main components: an LLM agent iteratively proposes assets with spatial and physical predicates; a solver, equipped with a physics engine, realizes these predicates into a 3D scene; and feedback from the solver informs the agent to refine and enrich the configuration. Moreover, our framework preserves strong controllability over fine-grained textual descriptions and numerical parameters (e.g., relative positions, scene stability), enabled through probabilistic programming for stability and a complementary heuristic that jointly regulates stability and spatial relations. Experimental results show that our method outperforms prior approaches in scene complexity, visual quality, and physical accuracy, offering a unified pipeline for generating complex physical scene layouts for robotic manipulation.
+            </p>
+          </section>
+          
+          <footer class="paper-footer">
+            <a href="https://arxiv.org/pdf/2602.14968v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+              Download PDF →
+            </a>
+          </footer>
+        </article>
+    </section>
           
           <footer class="paper-footer">
             <a href="https://arxiv.org/pdf/2602.15028v1.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
