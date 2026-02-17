@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Automated dashboard for latest arXiv papers in oncology and artificial intelligence">
+  <title>arXiv Papers Dashboard</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-text">Personal Website</span>
+      </a>
+      
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="arxiv.html" class="nav-link active">arXiv Papers</a>
+        </li>
+        <li class="nav-item">
+          <a href="games.html" class="nav-link">Games</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <main class="container">
+    <section class="page-header">
+      <h1>Latest Research Papers</h1>
+      <p class="subtitle">Oncology and Artificial Intelligence</p>
+      <p class="updated-at">
+        Last updated: <time datetime="2024-02-17T06:00:00Z">2024-02-17 06:00:00 UTC</time>
+      </p>
+    </section>
+    
+    <section id="arxiv-papers" class="papers-grid">
+      <article class="paper-card">
+        <header class="paper-header">
+          <h3 class="paper-title">
+            <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">
+              Papers will be automatically updated here
+            </a>
+          </h3>
+          <div class="paper-meta">
+            <span class="paper-authors">By arXiv-Copilot Agent</span>
+            <span class="paper-date">Published: <time datetime="2024-02-17">2024-02-17</time></span>
+          </div>
+        </header>
+        
+        <section class="paper-body">
+          <p class="paper-summary">
+            This dashboard is automatically updated every midnight UTC. 
+            The papers shown here are fetched from the arXiv API, summarized using AI, 
+            and deployed to GitHub Pages without manual intervention.
+          </p>
+          <ul class="paper-key-points">
+            <li>Automated fetching from arXiv API</li>
+            <li>AI-generated summaries</li>
+            <li>Daily updates at midnight UTC</li>
+          </ul>
+        </section>
+        
+        <footer class="paper-footer">
+          <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer" class="arxiv-link">
+            Learn more about arXiv →
+          </a>
+        </footer>
+      </article>
+    </section>
+    
+    <section class="papers-footer">
+      <p>Papers are updated automatically every midnight UTC.</p>
+      <p>Source: <a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv.org</a></p>
+    </section>
+  </main>
+  
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2024 Personal Website. Built with GitHub Copilot.</p>
+      <ul class="footer-links">
+        <li><a href="https://github.com" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
