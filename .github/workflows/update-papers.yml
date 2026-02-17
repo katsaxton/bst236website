@@ -2,7 +2,7 @@ name: Update arXiv Papers Dashboard
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Midnight UTC every day
+    - cron: '*/5 * * * *'  # Every 5 minutes (for testing)
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
@@ -31,10 +31,9 @@ jobs:
           
           function fetchPapers() {
             return new Promise((resolve, reject) => {
-              // Search for AI and oncology papers from the last 7 days
-              const categories = 'cat:cs.AI OR cat:q-bio.CB OR cat:stat.ML';
-              const searchQuery = encodeURIComponent(`(${categories}) AND submittedDate:[now-7d TO now]`);
-              const url = `http://export.arxiv.org/api/query?search_query=${searchQuery}&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+              // Simpler query that's known to work
+              const searchQuery = encodeURIComponent('cat:cs.AI AND submittedDate:[2026-02-10 TO 2026-02-17]');
+              const url = `https://export.arxiv.org/api/query?search_query=${searchQuery}&max_results=10&sortBy=submittedDate&sortOrder=descending`;
               
               console.log('Fetching papers from arXiv API...');
               
