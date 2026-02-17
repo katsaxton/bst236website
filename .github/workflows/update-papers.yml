@@ -134,8 +134,8 @@ jobs:
             let html = fs.readFileSync("arxiv.html", "utf8");
             
             html = html.replace(
-              /<section id="arxiv-papers" class="papers-grid">[\s\S]*?<\/section>\s*<footer class="paper-footer">/,
-              "<section id=\"arxiv-papers\" class=\"papers-grid\">\n" + paperCards + "\n    </section>\n        \n        <footer class=\"paper-footer\">"
+              /<section id="arxiv-papers" class="papers-grid">\s*<\/section>/,
+              "<section id=\"arxiv-papers\" class=\"papers-grid\">\n" + paperCards + "\n    </section>"
             );
             
             html = html.replace(
