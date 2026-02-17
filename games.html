@@ -4,8 +4,270 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Interactive games and projects">
-  <title>Games</title>
+  <title>Games - Valentine Pac-Man</title>
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    /* Valentine Pac-Man Game Styles */
+    .game-container {
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 100%);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(255, 20, 147, 0.3);
+    }
+
+    .game-title {
+      text-align: center;
+      font-size: 32px;
+      margin: 10px 0;
+      color: #ff1493;
+      text-shadow: 2px 2px 4px rgba(255, 105, 180, 0.3);
+    }
+
+    .game-info {
+      display: flex;
+      justify-content: space-around;
+      margin: 15px 0;
+      font-size: 18px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .game-info-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .powered-indicator {
+      text-align: center;
+      font-size: 16px;
+      font-weight: bold;
+      color: #ff1493;
+      min-height: 24px;
+      transition: all 0.2s;
+    }
+
+    .game-board {
+      display: grid;
+      grid-template-columns: repeat(21, 1fr);
+      gap: 2px;
+      background: #000;
+      padding: 10px;
+      margin: 20px 0;
+      border-radius: 8px;
+      aspect-ratio: 1;
+    }
+
+    .cell {
+      width: 100%;
+      aspect-ratio: 1;
+      background: #1a1a4d;
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .cell.wall {
+      background: linear-gradient(135deg, #0066ff 0%, #003d99 100%);
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.5);
+    }
+
+    .cell.wall::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 2px,
+        rgba(255, 255, 255, 0.1) 2px,
+        rgba(255, 255, 255, 0.1) 4px
+      );
+    }
+
+    .cell.dot::before {
+      content: '•';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 8px;
+      color: #fff;
+    }
+
+    .entity {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 20px;
+      z-index: 10;
+    }
+
+    .pacman {
+      animation: pacman-munch 0.2s infinite;
+    }
+
+    @keyframes pacman-munch {
+      0%, 100% { font-size: 20px; }
+      50% { font-size: 18px; }
+    }
+
+    .ghost {
+      filter: drop-shadow(0 0 4px rgba(255, 105, 180, 0.5));
+    }
+
+    .ghost.powered {
+      filter: drop-shadow(0 0 8px #ff1493);
+      opacity: 0.6;
+    }
+
+    .rose {
+      animation: rose-spin 2s infinite linear;
+      font-size: 18px;
+    }
+
+    @keyframes rose-spin {
+      0% { transform: translate(-50%, -50%) rotate(0deg); }
+      100% { transform: translate(-50%, -50%) rotate(360deg); }
+    }
+
+    .heart {
+      animation: heart-float 0.3s linear;
+      font-size: 16px;
+    }
+
+    @keyframes heart-float {
+      0% { opacity: 1; }
+      100% { opacity: 0.5; }
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin: 15px 0;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 10px 20px;
+      font-size: 16px;
+      font-weight: bold;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-start {
+      background: linear-gradient(135deg, #ff1493 0%, #ff69b4 100%);
+      color: white;
+    }
+
+    .btn-start:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(255, 20, 147, 0.4);
+    }
+
+    .btn-start:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-restart {
+      background: linear-gradient(135deg, #00d4ff 0%, #0099cc 100%);
+      color: white;
+    }
+
+    .btn-restart:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(0, 212, 255, 0.4);
+    }
+
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 100%);
+      padding: 40px;
+      border-radius: 15px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-title {
+      font-size: 48px;
+      margin: 20px 0;
+      color: #ff1493;
+    }
+
+    .modal-score {
+      font-size: 24px;
+      margin: 15px 0;
+      color: #333;
+    }
+
+    .falling-hearts {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+    }
+
+    .heart-fall {
+      position: absolute;
+      font-size: 40px;
+      animation: fall 3s linear forwards;
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translateY(0) rotate(0deg);
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    .instructions {
+      background: rgba(255, 105, 180, 0.1);
+      padding: 15px;
+      border-left: 4px solid #ff1493;
+      margin: 15px 0;
+      border-radius: 4px;
+      font-size: 14px;
+      color: #333;
+    }
+
+    .instructions strong {
+      color: #ff1493;
+    }
+  </style>
 </head>
 <body>
   <nav class="navbar">
@@ -30,17 +292,54 @@
   
   <main class="container">
     <section class="page-header">
-      <h1>Games</h1>
-      <p class="subtitle">Coming Soon</p>
+      <h1>💕 Valentine Pac-Man 💕</h1>
+      <p class="subtitle">Eat dots, avoid ghosts, find power-ups!</p>
     </section>
     
     <section class="content">
-      <div class="placeholder-card">
-        <h2>Interactive Games</h2>
-        <p>More content coming soon. Check back later!</p>
+      <div class="game-container">
+        <div class="game-title">🎮 Valentine Pac-Man 💕</div>
+        
+        <div class="instructions">
+          <strong>How to Play:</strong> Use arrow keys to move. Eat all the dots to win! Avoid ghosts, but find the rose 🌹 to power up and shoot hearts 💕 to defeat ghosts. Collect all dots to win!
+        </div>
+
+        <div class="game-info">
+          <div class="game-info-item">
+            <span>Score:</span>
+            <span id="score">0</span>
+          </div>
+          <div class="game-info-item">
+            <span>Lives:</span>
+            <span id="lives">❤️ ❤️ ❤️</span>
+          </div>
+          <div class="game-info-item">
+            <span>Dots Left:</span>
+            <span id="dots-left">200</span>
+          </div>
+        </div>
+
+        <div class="powered-indicator" id="powered-indicator"></div>
+
+        <div class="game-board" id="game-board"></div>
+
+        <div class="controls">
+          <button class="btn btn-start" id="start-btn">Start Game</button>
+          <button class="btn btn-restart" id="restart-btn" style="display: none;">Restart</button>
+        </div>
       </div>
     </section>
   </main>
+
+  <div class="modal" id="game-modal">
+    <div class="modal-content">
+      <div class="modal-title" id="modal-title"></div>
+      <div class="modal-score" id="modal-score"></div>
+      <button class="btn btn-restart" onclick="location.reload()">Play Again</button>
+    </div>
+  </div>
+
+  <div class="falling-hearts" id="falling-hearts"></div>
   
   <footer class="footer">
     <div class="footer-content">
@@ -51,5 +350,382 @@
       </ul>
     </div>
   </footer>
+
+  <script>
+    // Maze generation (21x21 grid)
+    function createMaze() {
+      const maze = Array(21).fill(null).map(() => Array(21).fill(0));
+      
+      // Create walls (borders and internal structure)
+      for (let i = 0; i < 21; i++) {
+        maze[0][i] = 1; maze[20][i] = 1; // top/bottom
+        maze[i][0] = 1; maze[i][20] = 1; // left/right
+      }
+      
+      // Internal walls - classic Pac-Man layout
+      const walls = [
+        [2,2], [2,3], [2,4], [2,5], [3,2], [3,5], [4,2], [4,5],
+        [18,2], [18,3], [18,4], [18,5], [19,2], [19,5],
+        [2,15], [2,16], [2,17], [2,18], [3,15], [3,18], [4,15], [4,18],
+        [18,15], [18,16], [18,17], [18,18], [19,15], [19,18],
+        [9,4], [10,4], [11,4], [9,8], [11,8], [9,12], [10,12], [11,12],
+        [5,10], [6,10], [7,10], [14,10], [15,10], [16,10],
+        [10,6], [10,14]
+      ];
+      
+      walls.forEach(([x, y]) => {
+        if (x >= 0 && x < 21 && y >= 0 && y < 21) maze[y][x] = 1;
+      });
+      
+      return maze;
+    }
+
+    // Game state
+    const GRID_SIZE = 21;
+    const CELL_SIZE = 24;
+    let maze = createMaze();
+    let gameState = {
+      pacman: { x: 10, y: 10, dir: 'right', nextDir: 'right', powered: false, poweredTimer: 0 },
+      ghosts: [
+        { x: 9, y: 8, name: 'Blinky', color: '👻', speed: 0 },
+        { x: 10, y: 8, name: 'Pinky', color: '👻', speed: 0 },
+        { x: 11, y: 8, name: 'Inky', color: '👻', speed: 0 }
+      ],
+      hearts: [],
+      dots: new Set(),
+      rose: { x: null, y: null, timer: 0 },
+      score: 0,
+      lives: 3,
+      gameRunning: false,
+      tick: 0
+    };
+
+    // Initialize dots
+    function initDots() {
+      gameState.dots.clear();
+      for (let y = 1; y < 20; y++) {
+        for (let x = 1; x < 20; x++) {
+          if (maze[y][x] !== 1 && !(x === 10 && y === 10) && 
+              !gameState.ghosts.some(g => g.x === x && g.y === y)) {
+            gameState.dots.add(`${x},${y}`);
+          }
+        }
+      }
+      updateDotsLeft();
+    }
+
+    function updateDotsLeft() {
+      document.getElementById('dots-left').textContent = gameState.dots.size;
+    }
+
+    function canMove(x, y) {
+      return x >= 0 && x < GRID_SIZE && y >= 0 && y < GRID_SIZE && maze[y][x] !== 1;
+    }
+
+    function getDirection(dir, nextDir, px, py) {
+      const moves = {
+        'up': [0, -1],
+        'down': [0, 1],
+        'left': [-1, 0],
+        'right': [1, 0]
+      };
+
+      // Try next direction first (queued input)
+      const [ndx, ndy] = moves[nextDir] || [0, 0];
+      if (canMove(px + ndx, py + ndy)) return nextDir;
+
+      // Fall back to current direction
+      const [cdx, cdy] = moves[dir] || [0, 0];
+      if (canMove(px + cdx, py + cdy)) return dir;
+
+      return dir; // No movement
+    }
+
+    function update() {
+      if (!gameState.gameRunning) return;
+
+      gameState.tick++;
+
+      // Update Pac-Man direction
+      gameState.pacman.dir = getDirection(gameState.pacman.dir, gameState.pacman.nextDir, 
+                                           gameState.pacman.x, gameState.pacman.y);
+
+      // Move Pac-Man
+      const moves = { 'up': [0, -1], 'down': [0, 1], 'left': [-1, 0], 'right': [1, 0] };
+      const [dx, dy] = moves[gameState.pacman.dir] || [0, 0];
+      const nx = gameState.pacman.x + dx;
+      const ny = gameState.pacman.y + dy;
+
+      if (canMove(nx, ny)) {
+        gameState.pacman.x = nx;
+        gameState.pacman.y = ny;
+      }
+
+      // Check dot collision
+      const dotKey = `${gameState.pacman.x},${gameState.pacman.y}`;
+      if (gameState.dots.has(dotKey)) {
+        gameState.dots.delete(dotKey);
+        gameState.score += 10;
+        updateDotsLeft();
+        if (gameState.dots.size === 0) endGame(true);
+      }
+
+      // Check rose collision
+      if (gameState.rose.x === gameState.pacman.x && gameState.rose.y === gameState.pacman.y) {
+        gameState.pacman.powered = true;
+        gameState.pacman.poweredTimer = 50; // 5 seconds
+        gameState.score += 50;
+        gameState.rose.x = null;
+        gameState.rose.y = null;
+      }
+
+      // Update powered state
+      if (gameState.pacman.powered) {
+        gameState.pacman.poweredTimer--;
+        if (gameState.pacman.poweredTimer <= 0) gameState.pacman.powered = false;
+
+        // Spawn hearts
+        if (gameState.tick % 2 === 0) {
+          const [hdx, hdy] = moves[gameState.pacman.dir] || [0, 0];
+          gameState.hearts.push({ x: gameState.pacman.x, y: gameState.pacman.y, dx: hdx, dy: hdy });
+        }
+      }
+
+      // Update hearts
+      gameState.hearts = gameState.hearts.filter(h => {
+        h.x += h.dx;
+        h.y += h.dy;
+        if (!canMove(h.x, h.y)) return false;
+
+        // Check ghost collision
+        for (let i = 0; i < gameState.ghosts.length; i++) {
+          if (gameState.ghosts[i].x === h.x && gameState.ghosts[i].y === h.y) {
+            gameState.ghosts[i].x = 9 + i;
+            gameState.ghosts[i].y = 8;
+            gameState.ghosts[i].respawnTimer = 30;
+            gameState.score += 200;
+            return false;
+          }
+        }
+        return true;
+      });
+
+      // Update ghosts
+      gameState.ghosts.forEach((ghost, i) => {
+        if (ghost.respawnTimer !== undefined && ghost.respawnTimer > 0) {
+          ghost.respawnTimer--;
+          return;
+        }
+        delete ghost.respawnTimer;
+
+        // Simple AI: move toward Pac-Man
+        const dx = Math.sign(gameState.pacman.x - ghost.x);
+        const dy = Math.sign(gameState.pacman.y - ghost.y);
+
+        let moved = false;
+        if (canMove(ghost.x + dx, ghost.y)) {
+          ghost.x += dx;
+          moved = true;
+        } else if (canMove(ghost.x, ghost.y + dy)) {
+          ghost.y += dy;
+          moved = true;
+        } else {
+          const dirs = [[1,0], [-1,0], [0,1], [0,-1]];
+          for (const [ndx, ndy] of dirs) {
+            if (canMove(ghost.x + ndx, ghost.y + ndy)) {
+              ghost.x += ndx;
+              ghost.y += ndy;
+              break;
+            }
+          }
+        }
+      });
+
+      // Check Pac-Man ghost collision
+      for (const ghost of gameState.ghosts) {
+        if (ghost.x === gameState.pacman.x && ghost.y === gameState.pacman.y) {
+          gameState.lives--;
+          updateLives();
+          if (gameState.lives <= 0) {
+            endGame(false);
+          } else {
+            gameState.pacman.x = 10;
+            gameState.pacman.y = 10;
+          }
+        }
+      }
+
+      // Spawn rose randomly
+      if (gameState.rose.x === null && Math.random() < 0.02) {
+        const emptySpots = [];
+        for (let y = 1; y < 20; y++) {
+          for (let x = 1; x < 20; x++) {
+            if (maze[y][x] !== 1 && !(x === gameState.pacman.x && y === gameState.pacman.y) &&
+                !gameState.ghosts.some(g => g.x === x && g.y === y)) {
+              emptySpots.push([x, y]);
+            }
+          }
+        }
+        if (emptySpots.length > 0) {
+          const [rx, ry] = emptySpots[Math.floor(Math.random() * emptySpots.length)];
+          gameState.rose.x = rx;
+          gameState.rose.y = ry;
+          gameState.rose.timer = 100;
+        }
+      }
+
+      if (gameState.rose.x !== null) {
+        gameState.rose.timer--;
+        if (gameState.rose.timer <= 0) {
+          gameState.rose.x = null;
+          gameState.rose.y = null;
+        }
+      }
+
+      render();
+    }
+
+    function render() {
+      document.getElementById('score').textContent = gameState.score;
+
+      // Update powered indicator
+      const indicator = document.getElementById('powered-indicator');
+      if (gameState.pacman.powered) {
+        indicator.textContent = `💕 POWERED UP! ${Math.ceil(gameState.pacman.poweredTimer / 10)}s 💕`;
+      } else {
+        indicator.textContent = '';
+      }
+
+      // Render board
+      const board = document.getElementById('game-board');
+      board.innerHTML = '';
+
+      for (let y = 0; y < GRID_SIZE; y++) {
+        for (let x = 0; x < GRID_SIZE; x++) {
+          const cell = document.createElement('div');
+          cell.className = 'cell';
+          if (maze[y][x] === 1) cell.classList.add('wall');
+          if (gameState.dots.has(`${x},${y}`)) cell.classList.add('dot');
+
+          // Pac-Man
+          if (gameState.pacman.x === x && gameState.pacman.y === y) {
+            const entity = document.createElement('div');
+            entity.className = 'entity pacman';
+            entity.textContent = '🟡';
+            cell.appendChild(entity);
+          }
+
+          // Ghosts
+          gameState.ghosts.forEach(ghost => {
+            if (ghost.x === x && ghost.y === y) {
+              const entity = document.createElement('div');
+              entity.className = 'entity ghost';
+              if (gameState.pacman.powered) entity.classList.add('powered');
+              entity.textContent = '👻';
+              cell.appendChild(entity);
+            }
+          });
+
+          // Rose
+          if (gameState.rose.x === x && gameState.rose.y === y) {
+            const entity = document.createElement('div');
+            entity.className = 'entity rose';
+            entity.textContent = '🌹';
+            cell.appendChild(entity);
+          }
+
+          // Hearts
+          gameState.hearts.forEach(heart => {
+            if (heart.x === x && heart.y === y) {
+              const entity = document.createElement('div');
+              entity.className = 'entity heart';
+              entity.textContent = '💕';
+              cell.appendChild(entity);
+            }
+          });
+
+          board.appendChild(cell);
+        }
+      }
+    }
+
+    function updateLives() {
+      document.getElementById('lives').textContent = '❤️'.repeat(Math.max(0, gameState.lives));
+    }
+
+    function endGame(won) {
+      gameState.gameRunning = false;
+      document.getElementById('start-btn').disabled = false;
+      document.getElementById('restart-btn').style.display = 'inline-block';
+
+      const modal = document.getElementById('game-modal');
+      const title = document.getElementById('modal-title');
+      const score = document.getElementById('modal-score');
+
+      if (won) {
+        title.textContent = 'You Win! 🎉';
+        score.textContent = `Final Score: ${gameState.score}`;
+        createFallingHearts();
+      } else {
+        title.textContent = 'Game Over 💔';
+        score.textContent = `Final Score: ${gameState.score}`;
+      }
+
+      modal.classList.add('active');
+    }
+
+    function createFallingHearts() {
+      const container = document.getElementById('falling-hearts');
+      for (let i = 0; i < 30; i++) {
+        const heart = document.createElement('div');
+        heart.className = 'heart-fall';
+        heart.textContent = '💕';
+        heart.style.left = Math.random() * 100 + '%';
+        heart.style.animationDelay = Math.random() * 1 + 's';
+        container.appendChild(heart);
+      }
+      setTimeout(() => {
+        container.innerHTML = '';
+      }, 4000);
+    }
+
+    function startGame() {
+      gameState.pacman = { x: 10, y: 10, dir: 'right', nextDir: 'right', powered: false, poweredTimer: 0 };
+      gameState.ghosts = [
+        { x: 9, y: 8, name: 'Blinky', color: '👻', speed: 0 },
+        { x: 10, y: 8, name: 'Pinky', color: '👻', speed: 0 },
+        { x: 11, y: 8, name: 'Inky', color: '👻', speed: 0 }
+      ];
+      gameState.hearts = [];
+      gameState.rose = { x: null, y: null, timer: 0 };
+      gameState.score = 0;
+      gameState.lives = 3;
+      gameState.tick = 0;
+      initDots();
+      updateLives();
+      gameState.gameRunning = true;
+      document.getElementById('start-btn').disabled = true;
+      document.getElementById('restart-btn').style.display = 'none';
+      document.getElementById('game-modal').classList.remove('active');
+      document.getElementById('falling-hearts').innerHTML = '';
+    }
+
+    // Controls
+    document.getElementById('start-btn').addEventListener('click', startGame);
+    document.getElementById('restart-btn').addEventListener('click', () => location.reload());
+
+    document.addEventListener('keydown', (e) => {
+      if (!gameState.gameRunning) return;
+      const keyMap = { 'ArrowUp': 'up', 'ArrowDown': 'down', 'ArrowLeft': 'left', 'ArrowRight': 'right' };
+      if (keyMap[e.key]) {
+        e.preventDefault();
+        gameState.pacman.nextDir = keyMap[e.key];
+      }
+    });
+
+    // Game loop
+    setInterval(update, 100);
+    render();
+  </script>
 </body>
 </html>
