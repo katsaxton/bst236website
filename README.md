@@ -180,13 +180,30 @@ Built a fully automated system using the **agentic programming paradigm**:
 
 #### Challenges & Solutions
 
-| Challenge | Solution |
-|-----------|----------|
-| arXiv API rate-limiting (>10 requests/min) | Added fallback sample paper, spacing requests, respecting 3-second minimum |
-| HTML structure corruption | Fixed regex to match actual file structure, use proper `</section>` tags |
-| Scheduled workflows not running | Learned GitHub Actions scheduling is asynchronous; verified with manual triggers and logs |
-| Accumulating old papers | Added `slice(0, 10)` to limit display, fixed section replacement regex |
-| Dual repo sync | Configured git `pushurl` to push to both repos automatically |
+**Challenge 1: arXiv API Rate Limiting**
+- **Issue**: API returned "Rate exceeded" error when querying too frequently (testing every 5-10 minutes)
+- **Solution**: Implemented fallback sample paper, respects 3-second minimum interval between requests, reduced cron frequency to once per hour (testing) then daily (production)
+- **Learning**: Public APIs have rate limits; graceful degradation is better than failure
+
+**Challenge 2: HTML Structure Corruption**
+- **Issue**: Multiple workflow runs caused malformed HTML with orphaned `<article>` and `<footer>` tags outside the papers section, preventing proper updates
+- **Solution**: Fixed the HTML file to have clean structure, corrected the regex replacement pattern to match actual file structure (changed from looking for `<footer class="paper-footer">` to proper `</section>` tag)
+- **Learning**: HTML regex must account for exact whitespace and structure; automated scripts need robust file structure validation
+
+**Challenge 3: Regex Matching for Paper Updates**
+- **Issue**: The workflow's section replacement regex wasn't matching the actual file content, so papers weren't updating even though the script ran successfully
+- **Solution**: Simplified regex from `/<section...[\s\S]*?<\/section>\s*<footer.../` to just `/<section id="arxiv-papers"...>[\s\S]*?<\/section>/`
+- **Learning**: Test regex patterns with actual file content; use simpler patterns when possible
+
+**Challenge 4: Scheduled Workflow Reliability**
+- **Issue**: Changing cron to `*/5` (every 5 minutes) didn't trigger any automatic runs; `*/30` (every 30 minutes) also had no visible triggers
+- **Solution**: Learned that GitHub Actions scheduling is asynchronous and can have delays; relied on manual testing with `workflow_dispatch` to verify the script works, trusted that cron eventually works
+- **Learning**: Can't easily test scheduled workflows in real-time; verification requires either waiting or using external tools
+
+**Challenge 5: Accumulating Old Papers**
+- **Issue**: Each workflow run was adding new papers without removing old ones, leading to 37+ papers in the display instead of 10
+- **Solution**: Added `limitedPapers = papers.slice(0, 10)` to limit the HTML generation to exactly 10 papers, cleaned up the file manually to remove old papers
+- **Learning**: State management matters; must explicitly limit output when building up content over time
 
 #### Prompting Strategy
 - **Approach**: Clear, detailed prompts with error handling examples
