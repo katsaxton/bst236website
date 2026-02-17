@@ -52,19 +52,28 @@ jobs:
           }
           
           function parseXMLPapers(xmlData) {
+            console.log("XML data length:", xmlData.length);
+            console.log("First 500 chars:", xmlData.substring(0, 500));
+            
             const papers = [];
             const entryRegex = /<entry>([\s\S]*?)<\/entry>/g;
             let match;
+            let entryCount = 0;
             
             while ((match = entryRegex.exec(xmlData)) !== null) {
+              entryCount++;
               const entry = match[1];
+              console.log("Processing entry " + entryCount);
               const paper = {};
               
               const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
               paper.title = titleMatch ? titleMatch[1].trim() : "Unknown";
+              console.log("  Title: " + paper.title.substring(0, 50));
               
               const idMatch = entry.match(/<id>http:\/\/arxiv\.org\/abs\/([^<]+)<\/id>/);
               paper.id = idMatch ? idMatch[1] : "";
+              console.log("  ID match result:", idMatch ? "found" : "not found");
+              if (idMatch) console.log("  ID: " + paper.id);
               
               const authorMatches = entry.match(/<author>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<\/author>/g) || [];
               paper.authors = authorMatches.map(a => {
@@ -83,6 +92,8 @@ jobs:
               }
             }
             
+            console.log("Total entries found: " + entryCount);
+            console.log("Valid papers extracted: " + papers.length);
             return papers;
           }
           
