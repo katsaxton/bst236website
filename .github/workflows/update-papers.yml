@@ -26,21 +26,20 @@ jobs:
         id: update_papers
         run: |
           cat > update_papers.js << 'NODEJS_EOF'
-          const https = require('https');
-          const fs = require('fs');
+          const https = require("https");
+          const fs = require("fs");
           
           function fetchPapers() {
             return new Promise((resolve, reject) => {
-              // Simpler query that's known to work
-              const searchQuery = encodeURIComponent('cat:cs.AI AND submittedDate:[2026-02-10 TO 2026-02-17]');
-              const url = `https://export.arxiv.org/api/query?search_query=${searchQuery}&max_results=10&sortBy=submittedDate&sortOrder=descending`;
+              const searchQuery = encodeURIComponent("cat:cs.AI AND submittedDate:[2026-02-10 TO 2026-02-17]");
+              const url = "https://export.arxiv.org/api/query?search_query=" + searchQuery + "&max_results=10&sortBy=submittedDate&sortOrder=descending";
               
-              console.log('Fetching papers from arXiv API...');
+              console.log("Fetching papers from arXiv API...");
               
               https.get(url, (res) => {
-                let data = '';
-                res.on('data', chunk => data += chunk);
-                res.on('end', () => {
+                let data = "";
+                res.on("data", chunk => data += chunk);
+                res.on("end", () => {
                   try {
                     const papers = parseXMLPapers(data);
                     resolve(papers);
@@ -48,7 +47,7 @@ jobs:
                     reject(e);
                   }
                 });
-              }).on('error', reject);
+              }).on("error", reject);
             });
           }
           
@@ -61,28 +60,23 @@ jobs:
               const entry = match[1];
               const paper = {};
               
-              // Extract title
               const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
-              paper.title = titleMatch ? titleMatch[1].trim() : 'Unknown';
+              paper.title = titleMatch ? titleMatch[1].trim() : "Unknown";
               
-              // Extract ID
               const idMatch = entry.match(/<id>.*?\/abs\/([^<]+)<\/id>/);
-              paper.id = idMatch ? idMatch[1] : '';
+              paper.id = idMatch ? idMatch[1] : "";
               
-              // Extract authors
               const authorMatches = entry.match(/<author>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<\/author>/g) || [];
               paper.authors = authorMatches.map(a => {
                 const nameMatch = a.match(/<name>(.*?)<\/name>/);
-                return nameMatch ? nameMatch[1] : '';
+                return nameMatch ? nameMatch[1] : "";
               });
               
-              // Extract published date
               const pubMatch = entry.match(/<published>([\d-]+)/);
-              paper.published = pubMatch ? pubMatch[1] : new Date().toISOString().split('T')[0];
+              paper.published = pubMatch ? pubMatch[1] : new Date().toISOString().split("T")[0];
               
-              // Extract summary
               const summaryMatch = entry.match(/<summary>([\s\S]*?)<\/summary>/);
-              paper.summary = summaryMatch ? summaryMatch[1].trim() : '';
+              paper.summary = summaryMatch ? summaryMatch[1].trim() : "";
               
               papers.push(paper);
             }
@@ -92,75 +86,49 @@ jobs:
           
           function updateHTML(papers) {
             const escapeHtml = (text) => {
-              const map = {'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'};
+              const map = {"&": "&amp;", "<": "&lt;", ">": "&gt;", "\"": "&quot;", "'": "&#039;"};
               return String(text).replace(/[&<>"']/g, m => map[m]);
             };
             
             const paperCards = papers.map(paper => {
-              const authorStr = paper.authors.join(', ') || 'Unknown';
-              return `        <article class="paper-card">
-          <header class="paper-header">
-            <h3 class="paper-title">
-              <a href="https://arxiv.org/abs/${escapeHtml(paper.id)}" target="_blank" rel="noopener noreferrer">
-                ${escapeHtml(paper.title)}
-              </a>
-            </h3>
-            <div class="paper-meta">
-              <span class="paper-authors">By ${escapeHtml(authorStr)}</span>
-              <span class="paper-date">Published: <time datetime="${paper.published}">${paper.published}</time></span>
-            </div>
-          </header>
-          
-          <section class="paper-body">
-            <p class="paper-summary">
-              ${escapeHtml(paper.summary)}
-            </p>
-          </section>
-          
-          <footer class="paper-footer">
-            <a href="https://arxiv.org/pdf/${escapeHtml(paper.id)}.pdf" target="_blank" rel="noopener noreferrer" class="arxiv-link">
-              Download PDF →
-            </a>
-          </footer>
-        </article>`;
-            }).join('\n');
+              const authorStr = paper.authors.join(", ") || "Unknown";
+              return "        <article class=\"paper-card\">\n          <header class=\"paper-header\">\n            <h3 class=\"paper-title\">\n              <a href=\"https://arxiv.org/abs/" + escapeHtml(paper.id) + "\" target=\"_blank\" rel=\"noopener noreferrer\">\n                " + escapeHtml(paper.title) + "\n              </a>\n            </h3>\n            <div class=\"paper-meta\">\n              <span class=\"paper-authors\">By " + escapeHtml(authorStr) + "</span>\n              <span class=\"paper-date\">Published: <time datetime=\"" + paper.published + "\">" + paper.published + "</time></span>\n            </div>\n          </header>\n          \n          <section class=\"paper-body\">\n            <p class=\"paper-summary\">\n              " + escapeHtml(paper.summary) + "\n            </p>\n          </section>\n          \n          <footer class=\"paper-footer\">\n            <a href=\"https://arxiv.org/pdf/" + escapeHtml(paper.id) + ".pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"arxiv-link\">\n              Download PDF →\n            </a>\n          </footer>\n        </article>";
+            }).join("\n");
             
             const timestamp = new Date().toISOString();
-            const dateStr = new Date(timestamp).toUTCString().replace(/GMT/, 'UTC');
+            const dateStr = new Date(timestamp).toUTCString().replace(/GMT/, "UTC");
             
-            let html = fs.readFileSync('arxiv.html', 'utf8');
+            let html = fs.readFileSync("arxiv.html", "utf8");
             
-            // Update the papers grid
             html = html.replace(
               /<section id="arxiv-papers" class="papers-grid">[\s\S]*?<\/section>/,
-              `<section id="arxiv-papers" class="papers-grid">\n${paperCards}\n    </section>`
+              "<section id=\"arxiv-papers\" class=\"papers-grid\">\n" + paperCards + "\n    </section>"
             );
             
-            // Update timestamp
             html = html.replace(
               /Last updated: <time datetime="[^"]*">[^<]*<\/time>/,
-              `Last updated: <time datetime="${timestamp}">${dateStr}</time>`
+              "Last updated: <time datetime=\"" + timestamp + "\">" + dateStr + "</time>"
             );
             
-            fs.writeFileSync('arxiv.html', html);
-            console.log(`Successfully updated arxiv.html with ${papers.length} papers`);
+            fs.writeFileSync("arxiv.html", html);
+            console.log("Successfully updated arxiv.html with " + papers.length + " papers");
           }
           
           fetchPapers()
             .then(papers => {
-              console.log(`Fetched ${papers.length} papers`);
+              console.log("Fetched " + papers.length + " papers");
               if (papers.length > 0) {
                 updateHTML(papers);
-                console.log('✓ Papers updated successfully');
+                console.log("✓ Papers updated successfully");
                 process.exit(0);
               } else {
-                console.log('⚠ No papers fetched, skipping update');
+                console.log("⚠ No papers fetched, skipping update");
                 process.exit(0);
               }
             })
             .catch(err => {
-              console.error('✗ Error:', err.message);
-              console.log('⚠ Continuing with empty update...');
+              console.error("✗ Error:", err.message);
+              console.log("⚠ Continuing with empty update...");
               process.exit(0);
             });
           NODEJS_EOF
