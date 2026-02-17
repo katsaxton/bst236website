@@ -2,7 +2,7 @@ name: Update arXiv Papers Dashboard
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Midnight UTC every day
+    - cron: '*/10 * * * *'  # Every 10 minutes (testing)
   workflow_dispatch:  # Allow manual triggers
 
 jobs:
