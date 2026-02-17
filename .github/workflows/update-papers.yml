@@ -31,7 +31,7 @@ jobs:
           
           function fetchPapers() {
             return new Promise((resolve, reject) => {
-              const searchQuery = encodeURIComponent("cat:cs.AI AND submittedDate:[2026-02-10 TO 2026-02-17]");
+              const searchQuery = encodeURIComponent("cat:cs.AI OR cat:q-bio.CB OR cat:stat.ML");
               const url = "https://export.arxiv.org/api/query?search_query=" + searchQuery + "&max_results=10&sortBy=submittedDate&sortOrder=descending";
               
               console.log("Fetching papers from arXiv API...");
@@ -63,7 +63,7 @@ jobs:
               const titleMatch = entry.match(/<title>([\s\S]*?)<\/title>/);
               paper.title = titleMatch ? titleMatch[1].trim() : "Unknown";
               
-              const idMatch = entry.match(/<id>.*?\/abs\/([^<]+)<\/id>/);
+              const idMatch = entry.match(/<id>http:\/\/arxiv\.org\/abs\/([^<]+)<\/id>/);
               paper.id = idMatch ? idMatch[1] : "";
               
               const authorMatches = entry.match(/<author>[\s\S]*?<name>(.*?)<\/name>[\s\S]*?<\/author>/g) || [];
@@ -78,7 +78,9 @@ jobs:
               const summaryMatch = entry.match(/<summary>([\s\S]*?)<\/summary>/);
               paper.summary = summaryMatch ? summaryMatch[1].trim() : "";
               
-              papers.push(paper);
+              if (paper.id) {
+                papers.push(paper);
+              }
             }
             
             return papers;
