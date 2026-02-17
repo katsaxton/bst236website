@@ -122,7 +122,8 @@ jobs:
               return String(text).replace(/[&<>"']/g, m => map[m]);
             };
             
-            const paperCards = papers.map(paper => {
+            const limitedPapers = papers.slice(0, 10);
+            const paperCards = limitedPapers.map(paper => {
               const authorStr = paper.authors.join(", ") || "Unknown";
               return "        <article class=\"paper-card\">\n          <header class=\"paper-header\">\n            <h3 class=\"paper-title\">\n              <a href=\"https://arxiv.org/abs/" + escapeHtml(paper.id) + "\" target=\"_blank\" rel=\"noopener noreferrer\">\n                " + escapeHtml(paper.title) + "\n              </a>\n            </h3>\n            <div class=\"paper-meta\">\n              <span class=\"paper-authors\">By " + escapeHtml(authorStr) + "</span>\n              <span class=\"paper-date\">Published: <time datetime=\"" + paper.published + "\">" + paper.published + "</time></span>\n            </div>\n          </header>\n          \n          <section class=\"paper-body\">\n            <p class=\"paper-summary\">\n              " + escapeHtml(paper.summary) + "\n            </p>\n          </section>\n          \n          <footer class=\"paper-footer\">\n            <a href=\"https://arxiv.org/pdf/" + escapeHtml(paper.id) + ".pdf\" target=\"_blank\" rel=\"noopener noreferrer\" class=\"arxiv-link\">\n              Download PDF →\n            </a>\n          </footer>\n        </article>";
             }).join("\n");
