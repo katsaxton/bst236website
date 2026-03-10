@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Global Temperature Explorer</title>
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.plot.ly/plotly-2.30.0.min.js"></script>
+  <style>
+    .viz-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      align-items: center;
+    }
+    .btn-group button {
+      padding: 0.5rem 1.2rem;
+      border: 1px solid var(--primary-color);
+      background: white;
+      color: var(--primary-color);
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: var(--transition);
+    }
+    .btn-group button:first-child { border-radius: var(--border-radius) 0 0 var(--border-radius); }
+    .btn-group button:last-child  { border-radius: 0 var(--border-radius) var(--border-radius) 0; }
+    .btn-group button.active, .btn-group button:hover {
+      background: var(--primary-color);
+      color: white;
+    }
+    .sort-label { font-size: 0.9rem; color: var(--text-light); margin-right: 0.25rem; }
+    select.sort-select {
+      padding: 0.45rem 0.7rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      color: var(--text-color);
+    }
+    .search-wrap { display: flex; align-items: center; gap: 0.5rem; }
+    .search-wrap input {
+      padding: 0.45rem 0.7rem;
+      border: 1px solid var(--border-color);
+      border-radius: var(--border-radius);
+      font-size: 0.9rem;
+      width: 200px;
+    }
+    #plot { width: 100%; height: 600px; }
+    .stat-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .stat-card {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      border-radius: var(--border-radius);
+      padding: 1rem 1.2rem;
+      text-align: center;
+    }
+    .stat-card .value { font-size: 1.8rem; font-weight: 700; color: var(--primary-color); }
+    .stat-card .label { font-size: 0.8rem; color: var(--text-lighter); margin-top: 0.2rem; }
+    #status-msg { font-size: 0.85rem; color: var(--text-lighter); margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo"><span class="logo-text">Personal Website</span></a>
+      <ul class="nav-menu">
+        <li class="nav-item"><a href="index.html" class="nav-link">Home</a></li>
+        <li class="nav-item"><a href="arxiv.html" class="nav-link">arXiv Papers</a></li>
+        <li class="nav-item"><a href="temperature-viz.html" class="nav-link active">Temperature Explorer</a></li>
+        <li class="nav-item"><a href="games.html" class="nav-link">Games</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="container">
+    <div class="page-header">
+      <h1>🌍 Global Temperature Explorer</h1>
+      <p class="subtitle">Interactive visualization of per-station temperature statistics (min, mean, max in °C)</p>
+    </div>
+
+    <div class="stat-cards" id="summaryCards"></div>
+
+    <div class="feature-card" style="margin-bottom:1.5rem;">
+      <div class="viz-controls">
+        <div class="btn-group" id="chartToggle">
+          <button class="active" data-chart="range">Temperature Range</button>
+          <button data-chart="bar">Mean Temperatures</button>
+          <button data-chart="scatter">Min vs Max</button>
+        </div>
+
+        <div>
+          <span class="sort-label">Sort by:</span>
+          <select class="sort-select" id="sortBy">
+            <option value="mean">Mean temp</option>
+            <option value="min">Min temp</option>
+            <option value="max">Max temp</option>
+            <option value="range">Temp range</option>
+            <option value="name">Station name</option>
+          </select>
+        </div>
+
+        <div class="search-wrap">
+          <input id="searchInput" type="text" placeholder="🔍 Highlight station…" />
+        </div>
+      </div>
+
+      <div id="status-msg">Loading data…</div>
+      <div id="plot"></div>
+    </div>
+
+    <p style="font-size:0.85rem;color:var(--text-lighter);">
+      Data: <code>station_summary.csv</code> — temperature statistics computed from the 1-billion-row measurements dataset (BST 236, Problem 2–3).
+      Hover over any point or bar for full details. Use Plotly's toolbar to zoom, pan, or download the chart.
+    </p>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2024 Personal Website. Built with GitHub Copilot.</p>
+      <ul class="footer-links">
+        <li><a href="https://github.com/katsaxton" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv</a></li>
+      </ul>
+    </div>
+  </footer>
+
+  <script>
+    // ── Data loading ──────────────────────────────────────────────────────────
+    function parseCSV(text) {
+      const lines = text.trim().split(/\r?\n/);
+      const header = lines[0].split(",").map(s => s.trim());
+      return lines.slice(1).map(line => {
+        const parts = line.split(",");
+        const obj = {};
+        header.forEach((h, i) => obj[h] = (parts[i] ?? "").trim());
+        return obj;
+      });
+    }
+
+    // ── Color scale: cold (blue) → warm (red) ────────────────────────────────
+    function tempColor(val, min, max) {
+      const t = (val - min) / (max - min);
+      const r = Math.round(30  + t * 210);
+      const g = Math.round(120 - t * 70);
+      const b = Math.round(220 - t * 190);
+      return `rgb(${r},${g},${b})`;
+    }
+
+    // ── Summary cards ─────────────────────────────────────────────────────────
+    function renderCards(rows) {
+      const means = rows.map(r => +r.mean);
+      const hottest = rows.reduce((a, b) => +a.mean > +b.mean ? a : b);
+      const coldest = rows.reduce((a, b) => +a.mean < +b.mean ? a : b);
+      const widest  = rows.reduce((a, b) => (+a.max - +a.min) > (+b.max - +b.min) ? a : b);
+      const globalMean = (means.reduce((s, v) => s + v, 0) / means.length).toFixed(1);
+
+      const cards = [
+        { value: rows.length,           label: "Stations" },
+        { value: `${globalMean} °C`,    label: "Average mean temp" },
+        { value: `${hottest.station}`,  label: `Hottest (${(+hottest.mean).toFixed(1)} °C mean)` },
+        { value: `${coldest.station}`,  label: `Coldest (${(+coldest.mean).toFixed(1)} °C mean)` },
+        { value: `${widest.station}`,   label: `Widest range (${(+widest.max - +widest.min).toFixed(1)} °C)` },
+      ];
+      document.getElementById("summaryCards").innerHTML = cards.map(c =>
+        `<div class="stat-card"><div class="value">${c.value}</div><div class="label">${c.label}</div></div>`
+      ).join("");
+    }
+
+    // ── Sorting ───────────────────────────────────────────────────────────────
+    function sortRows(rows, key) {
+      return [...rows].sort((a, b) => {
+        if (key === "name") return a.station.localeCompare(b.station);
+        if (key === "range") return (+a.max - +a.min) - (+b.max - +b.min);
+        return +a[key] - +b[key];
+      });
+    }
+
+    // ── Chart renderers ───────────────────────────────────────────────────────
+    function renderRange(rows, highlight) {
+      const q = (highlight || "").toLowerCase();
+      const globalMin = Math.min(...rows.map(r => +r.min));
+      const globalMax = Math.max(...rows.map(r => +r.max));
+
+      const traces = rows.map(r => {
+        const isHit = q && r.station.toLowerCase().includes(q);
+        return {
+          type: "scatter",
+          mode: "lines+markers",
+          name: r.station,
+          x: [+r.min, +r.mean, +r.max],
+          y: [r.station, r.station, r.station],
+          line: { color: isHit ? "#d62728" : tempColor(+r.mean, globalMin, globalMax), width: isHit ? 4 : 2.5 },
+          marker: { size: [8, 10, 8], symbol: ["circle", "diamond", "circle"] },
+          hovertemplate: `<b>${r.station}</b><br>Min: ${r.min} °C<br>Mean: ${r.mean} °C<br>Max: ${r.max} °C<extra></extra>`,
+          showlegend: false
+        };
+      });
+
+      const layout = {
+        title: "Temperature Range per Station (min ◆ mean ◆ max)",
+        xaxis: { title: "Temperature (°C)", zeroline: true, zerolinecolor: "#ccc" },
+        yaxis: { title: "", automargin: true },
+        margin: { l: 120, r: 20, t: 60, b: 60 },
+        hovermode: "closest"
+      };
+      Plotly.react("plot", traces, layout, { responsive: true });
+    }
+
+    function renderBar(rows, highlight) {
+      const q = (highlight || "").toLowerCase();
+      const globalMin = Math.min(...rows.map(r => +r.mean));
+      const globalMax = Math.max(...rows.map(r => +r.mean));
+      const colors = rows.map(r =>
+        (q && r.station.toLowerCase().includes(q)) ? "#d62728" : tempColor(+r.mean, globalMin, globalMax)
+      );
+
+      const trace = {
+        type: "bar",
+        orientation: "h",
+        x: rows.map(r => +r.mean),
+        y: rows.map(r => r.station),
+        marker: { color: colors },
+        hovertemplate: "<b>%{y}</b><br>Mean: %{x} °C<extra></extra>"
+      };
+
+      Plotly.react("plot", [trace], {
+        title: "Mean Temperature by Station",
+        xaxis: { title: "Mean Temperature (°C)" },
+        yaxis: { automargin: true },
+        margin: { l: 120, r: 20, t: 60, b: 60 }
+      }, { responsive: true });
+    }
+
+    function renderScatter(rows, highlight) {
+      const q = (highlight || "").toLowerCase();
+      const isMatch = rows.map(r => q && r.station.toLowerCase().includes(q));
+
+      const base = {
+        type: "scatter", mode: "markers+text",
+        x: rows.map(r => +r.min),
+        y: rows.map(r => +r.max),
+        text: rows.map((r, i) => isMatch[i] ? r.station : ""),
+        textposition: "top center",
+        hovertemplate: rows.map(r =>
+          `<b>${r.station}</b><br>Min: ${r.min} °C<br>Max: ${r.max} °C<br>Mean: ${r.mean} °C<extra></extra>`
+        ),
+        marker: {
+          size: rows.map((_, i) => isMatch[i] ? 16 : 10),
+          color: rows.map((r, i) => isMatch[i] ? "#d62728" : +r.mean),
+          colorscale: "RdBu",
+          reversescale: true,
+          colorbar: { title: "Mean (°C)" },
+          line: { width: 1, color: "white" }
+        },
+        showlegend: false
+      };
+
+      Plotly.react("plot", [base], {
+        title: "Min vs Max Temperature (coloured by mean)",
+        xaxis: { title: "Min Temperature (°C)" },
+        yaxis: { title: "Max Temperature (°C)" },
+        margin: { l: 70, r: 20, t: 60, b: 60 }
+      }, { responsive: true });
+    }
+
+    // ── Main ──────────────────────────────────────────────────────────────────
+    async function main() {
+      const statusEl = document.getElementById("status-msg");
+      let allRows;
+
+      try {
+        const resp = await fetch("./data/station_summary.csv");
+        if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+        allRows = parseCSV(await resp.text());
+        statusEl.textContent = `${allRows.length} stations loaded. Hover for details; use toolbar to zoom.`;
+      } catch (e) {
+        statusEl.textContent = `Error loading data: ${e.message}`;
+        return;
+      }
+
+      renderCards(allRows);
+
+      let currentChart = "range";
+      let currentSort  = "mean";
+      let highlight    = "";
+
+      function draw() {
+        const rows = sortRows(allRows, currentSort);
+        if (currentChart === "range")   renderRange(rows, highlight);
+        else if (currentChart === "bar") renderBar(rows, highlight);
+        else                             renderScatter(rows, highlight);
+      }
+
+      document.getElementById("chartToggle").addEventListener("click", e => {
+        const btn = e.target.closest("button[data-chart]");
+        if (!btn) return;
+        document.querySelectorAll("#chartToggle button").forEach(b => b.classList.remove("active"));
+        btn.classList.add("active");
+        currentChart = btn.dataset.chart;
+        draw();
+      });
+
+      document.getElementById("sortBy").addEventListener("change", e => {
+        currentSort = e.target.value;
+        draw();
+      });
+
+      document.getElementById("searchInput").addEventListener("input", e => {
+        highlight = e.target.value;
+        draw();
+      });
+
+      draw();
+    }
+
+    main().catch(err => {
+      document.getElementById("status-msg").textContent = `Error: ${err.message}`;
+      console.error(err);
+    });
+  </script>
+</body>
+</html>
