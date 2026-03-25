@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tutorial: Building an Automated Research Workflow for JAMA-style paper generation">
+  <title>Tutorial: Automated Research Workflow</title>
+  <link rel="stylesheet" href="css/style.css">
+  <style>
+    .tutorial-content {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: var(--spacing-lg);
+      background: var(--bg-color);
+    }
+    .tutorial-content h2 {
+      border-bottom: 2px solid var(--primary-light);
+      padding-bottom: var(--spacing-xs);
+      margin-top: var(--spacing-xl);
+    }
+    .tutorial-content h3 {
+      margin-top: var(--spacing-lg);
+      color: var(--primary-dark);
+    }
+    .tutorial-content code {
+      background-color: var(--bg-light);
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 0.9em;
+    }
+    .tutorial-content pre {
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius);
+      overflow-x: auto;
+      margin-bottom: var(--spacing-md);
+    }
+    .tutorial-content pre code {
+      background-color: transparent;
+      color: inherit;
+      padding: 0;
+    }
+    .callout {
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius);
+      margin-bottom: var(--spacing-md);
+      border-left: 5px solid;
+    }
+    .callout-important {
+      background-color: #fff5f5;
+      border-left-color: #ff4d4d;
+    }
+    .callout-tip {
+      background-color: #f0fff4;
+      border-left-color: #38a169;
+    }
+    .callout-warning {
+      background-color: #fffaf0;
+      border-left-color: #ed8936;
+    }
+    .callout-title {
+      font-weight: bold;
+      margin-bottom: var(--spacing-xs);
+      text-transform: uppercase;
+      font-size: 0.85rem;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: var(--spacing-md);
+    }
+    th, td {
+      text-align: left;
+      padding: var(--spacing-sm);
+      border-bottom: 1px solid var(--border-light);
+    }
+    th {
+      background-color: var(--bg-light);
+      font-weight: 600;
+    }
+    blockquote {
+      border-left: 4px solid var(--primary-light);
+      padding-left: var(--spacing-md);
+      font-style: italic;
+      color: var(--text-light);
+      margin: var(--spacing-md) 0;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <span class="logo-text">Personal Website</span>
+      </a>
+      
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">Home</a>
+        </li>
+        <li class="nav-item">
+          <a href="arxiv.html" class="nav-link">arXiv Papers</a>
+        </li>
+        <li class="nav-item">
+          <a href="temperature-viz.html" class="nav-link">Temperature Explorer</a>
+        </li>
+        <li class="nav-item">
+          <a href="tutorial.html" class="nav-link active">Tutorial</a>
+        </li>
+        <li class="nav-item">
+          <a href="games.html" class="nav-link">Games</a>
+        </li>
+        <li class="nav-item">
+          <a href="nih-grants/index.html" class="nav-link">NIH Grants</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  
+  <main class="container">
+    <section class="page-header">
+      <h1>🎓 Tutorial: Building an Automated Research Workflow</h1>
+      <p class="subtitle">How to design, organize, and execute a generic multi-agent system for JAMA-style paper generation.</p>
+    </section>
+
+    <div class="tutorial-content">
+      <blockquote>
+        How to design, organize, and execute a generic multi-agent system for JAMA-style paper generation.
+      </blockquote>
+
+      <p>This guide explains the architecture and operation of the <strong>BST236 Midterm Project Workflow</strong>—a system designed to turn raw public health data into publication-ready research papers with minimal human intervention.</p>
+
+      <hr>
+
+      <h2>1. Executive Summary</h2>
+
+      <h3>1.1 Why This Workflow Exists</h3>
+      <p>Research is often slowed by the friction of switching between data analysis, literature review, and manuscript drafting. This workflow eliminates that friction by:</p>
+      <ul>
+        <li><strong>Preventing Context Loss:</strong> Agents share a unified understanding of the data across all phases.</li>
+        <li><strong>Enforcing Standards:</strong> Built-in "Quality Gates" ensure every output meets JAMA Network Open guidelines.</li>
+        <li><strong>Scaling Effort:</strong> Complex statistical modeling and LaTeX typesetting are automated, allowing the researcher to focus on high-level interpretation.</li>
+      </ul>
+
+      <h3>1.2 The Goal</h3>
+      <p>To move from <strong>Raw Data → Publication-Ready PDF + Presentation Materials</strong> in under 60 minutes.</p>
+
+      <hr>
+
+      <h2>2. Getting Started: Installation & Setup</h2>
+
+      <h3>2.1 System Requirements</h3>
+      <p>Our workflow is designed to be cross-platform but has been rigorously tested on:</p>
+      <ul>
+        <li><strong>macOS</strong> (Primary development environment)</li>
+        <li><strong>Linux/Ubuntu</strong></li>
+        <li><strong>Windows</strong> (via WSL/WSL2 recommended)</li>
+      </ul>
+
+      <h3>2.2 Software Prerequisites</h3>
+      <p>You will need three core components installed on your system:</p>
+
+      <h4>2.2.1 Python Environment (3.9+)</h4>
+      <p>The orchestrator and analysis scripts require standard scientific computing packages.</p>
+      <pre><code># Install required Python packages
+pip install pandas numpy scipy statsmodels matplotlib seaborn scikit-learn openpyxl</code></pre>
+
+      <h4>2.2.2 LaTeX Distribution</h4>
+      <p>This is required for generating the final publication-ready PDF.</p>
+      <ul>
+        <li><strong>macOS:</strong> <code>brew install --cask mactex</code></li>
+        <li><strong>Ubuntu:</strong> <code>sudo apt-get install texlive-full</code></li>
+        <li><strong>Windows:</strong> Download <a href="https://miktex.org/">MiKTeX</a></li>
+      </ul>
+
+      <h4>2.2.3 AI Assistant (Optional)</h4>
+      <p>If you wish to use the multi-agent system via a CLI assistant, we recommend the GitHub Copilot CLI:</p>
+      <pre><code>gh extension install github/gh-copilot
+gh auth login</code></pre>
+
+      <h3>2.3 Repository Setup</h3>
+      <ol>
+        <li><strong>Clone the Workflow:</strong>
+          <pre><code>git clone https://github.com/your-squad/midterm-project.git
+cd midterm-project</code></pre>
+        </li>
+        <li><strong>Verify Installation:</strong>
+          <p>Run a quick sanity check to ensure all dependencies are met:</p>
+          <pre><code>python -c "import pandas, statsmodels, matplotlib; print('✅ Python OK')"
+pdflatex --version | head -n 1</code></pre>
+        </li>
+      </ol>
+
+      <div class="callout callout-important">
+        <div class="callout-title">Important</div>
+        <strong>PATH Issues:</strong> Ensure that <code>pdflatex</code> and <code>bibtex</code> are in your system's PATH. On macOS, you may need to add <code>/Library/TeX/texbin</code> to your path manually.
+      </div>
+
+      <hr>
+
+      <h2>3. Quick Start</h2>
+
+      <h3>3.1 Method 1: The Python Orchestrator (Script Mode)</h3>
+      <p>The fastest way to execute the workflow is via the Python orchestrator. This is recommended for the "90-minute exam" scenario where stability is key. Place your datasets in a folder (e.g., <code>exam_data/</code>) and run:</p>
+      <pre><code># Run the complete end-to-end workflow
+python workflow/orchestrator.py exam_data/ -o exam_paper/</code></pre>
+
+      <h3>3.2 Method 2: The AI CLI (Agent Mode)</h3>
+      <p>For interactive control or fine-tuning, you can use an AI CLI (like <strong>Gemini CLI</strong> or <strong>Claude Code</strong>) to trigger the agents directly. This allows the AI to "think" through each step and handle complex edge cases that a static script might miss.</p>
+
+      <p><strong>The "Power Prompt":</strong></p>
+      <p>Simply point the AI to the <code>workflow/</code> folder and issue a high-level directive:</p>
+      <pre><code>"Use the multi-agent workflow system in workflow/ to generate a JAMA Network Open paper 
+from the data in exam_data/. 
+
+1. Follow the Agent definitions in workflow/agents/
+2. Use the Skills provided in workflow/skills/
+3. Adhere to the Quality Standards in workflow/prompts/
+
+Deliver the final PDF to the exam_paper/ directory."</code></pre>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Pro Tip</div>
+        <strong>Pro Tip:</strong> When using Agent Mode, you can pause between phases to review the <code>research_question.md</code> or <code>analysis_plan.md</code> before the AI proceeds to the statistical modeling phase.
+      </div>
+
+      <div class="callout callout-important">
+        <div class="callout-title">Verification</div>
+        <strong>Verification:</strong> After the workflow finishes, check <code>exam_paper/paper.pdf</code>. If you see "Reference ??", it means the BibTeX phase encountered an error; check <code>exam_paper/paper.log</code> for details.
+      </div>
+
+      <hr>
+
+      <h2>4. System Architecture</h2>
+
+      <h3>4.1 The 3-Layer Design Pattern</h3>
+      <p>Our workflow is built on a modular "3-layer cake" architecture, ensuring that domain expertise is separated from technical implementation.</p>
+
+      <h4>4.1.1 Layer 1: The Agent Layer (<code>workflow/agents/</code>)</h4>
+      <p>Specialized AI entities with specific "personalities" and goals.</p>
+      <ul>
+        <li><strong>orchestrator.agent.md</strong>: The "Project Manager" who handles phase transitions.</li>
+        <li><strong>data-explorer.agent.md</strong>: The "Detective" who finds the research question.</li>
+        <li><strong>statistician.agent.md</strong>: The "Math Expert" who runs regressions.</li>
+        <li><strong>visualizer.agent.md</strong>: The "Designer" who creates JAMA-compliant figures.</li>
+        <li><strong>literature-reviewer.agent.md</strong>: The "Librarian" who manages references.</li>
+        <li><strong>paper-writer.agent.md</strong>: The "Author" who synthesizes everything into LaTeX.</li>
+        <li><strong>quality-controller.agent.md</strong>: The "Critic" who reviews the final product.</li>
+        <li><strong>post-production.agent.md</strong>: The "Marketer" who builds slides and websites.</li>
+      </ul>
+
+      <h4>4.1.2 Layer 2: The Skills Layer (<code>workflow/skills/</code>)</h4>
+      <p>Atomic, reusable code libraries that agents "invoke" to perform work.</p>
+      <ul>
+        <li><code>data-loading.skill.md</code>: Robust parsing for CSV/Excel/Markdown.</li>
+        <li><code>exploratory-analysis.skill.md</code>: Automatic profiling and EDA.</li>
+        <li><code>statistical-modeling.skill.md</code>: DiD, Logistic Regression, and Inference code.</li>
+        <li><code>plotting.skill.md</code>: Matplotlib/Seaborn templates for high-DPI figures.</li>
+        <li><code>latex-generation.skill.md</code>: LaTeX boilerplate and table formatting.</li>
+        <li><code>reference-management.skill.md</code>: BibTeX generation and formatting.</li>
+        <li><code>paper-compilation.skill.md</code>: Logic for the multi-pass PDF compilation.</li>
+      </ul>
+
+      <h4>4.1.3 Layer 3: The Prompts Layer (<code>workflow/prompts/</code>)</h4>
+      <p>The "Rulebook" that defines quality standards and formatting requirements.</p>
+      <ul>
+        <li><code>research-question-prompt.md</code>: The FINER criteria (Feasible, Interesting, Novel, Ethical, Relevant).</li>
+        <li><code>analysis-plan-prompt.md</code>: Statistical rigorousness standards.</li>
+        <li><code>visualization-guidelines.md</code>: JAMA figure styling (colorblind-friendly, vector format).</li>
+        <li><code>writing-guidelines.md</code>: The academic voice and section constraints.</li>
+        <li><code>review-checklist.md</code>: The 20-point rubric for final approval.</li>
+      </ul>
+
+      <hr>
+
+      <h2>5. The 7-Phase Execution Loop</h2>
+
+      <p>The <code>orchestrator.py</code> script executes the following sequence:</p>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Phase</th>
+            <th>Script</th>
+            <th>Agent</th>
+            <th>Output</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>1. Exploration</strong></td>
+            <td><code>01_data_explorer.py</code></td>
+            <td>Data Explorer</td>
+            <td><code>research_question.md</code>, <code>analysis_plan.md</code></td>
+          </tr>
+          <tr>
+            <td><strong>2. Analysis</strong></td>
+            <td><code>02_statistician.py</code></td>
+            <td>Statistician</td>
+            <td><code>results/</code>, <code>analysis_code.py</code></td>
+          </tr>
+          <tr>
+            <td><strong>3. Visualization</strong></td>
+            <td><code>03_visualizer.py</code></td>
+            <td>Visualizer</td>
+            <td><code>figures/*.pdf</code>, <code>tables/*.tex</code></td>
+          </tr>
+          <tr>
+            <td><strong>4. Literature</strong></td>
+            <td><code>04_literature_reviewer.py</code></td>
+            <td>Literature Reviewer</td>
+            <td><code>references.bib</code>, <code>citations.md</code></td>
+          </tr>
+          <tr>
+            <td><strong>5. Writing</strong></td>
+            <td><code>05_paper_writer.py</code></td>
+            <td>Paper Writer</td>
+            <td><code>paper.tex</code> (Complete JAMA Draft)</td>
+          </tr>
+          <tr>
+            <td><strong>6. Review</strong></td>
+            <td><code>06_quality_controller.py</code></td>
+            <td>Quality Controller</td>
+            <td><code>review_report.md</code>, Revised <code>.tex</code></td>
+          </tr>
+          <tr>
+            <td><strong>7. Production</strong></td>
+            <td><code>07_post_production.py</code></td>
+            <td>Post-Production</td>
+            <td><code>slides/</code>, <code>website/</code>, <code>social/</code></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <hr>
+
+      <h2>6. Operational Patterns</h2>
+
+      <h3>6.1 Pattern: The Adversarial Critic Loop</h3>
+      <p>The system doesn't just "finish" at Phase 5. Phase 6 invokes the <strong>Quality Controller Agent</strong> to audit the paper against the <code>review-checklist.md</code>. If the score is below the "95% Human-Quality" threshold, the Writer is re-activated with specific correction instructions.</p>
+
+      <h3>6.2 Pattern: Contractor Mode (Manual Intervention)</h3>
+      <p>While <code>orchestrator.py</code> handles the "Big Picture," users can use the CLI to drop into a specific phase.</p>
+      <pre><code># Example: Only regenerate figures if the data changed
+python workflow/03_visualizer.py exam_data/ exam_paper/</code></pre>
+
+      <h3>6.3 Pattern: Post-Paper Products</h3>
+      <p>Once the paper is finalized, the <strong>Post-Production Agent</strong> automatically converts the LaTeX content into:</p>
+      <ol>
+        <li><strong>Beamer Slides:</strong> A 15-slide summary of the findings.</li>
+        <li><strong>Interactive Website:</strong> A Plotly-based dashboard for exploring the results.</li>
+        <li><strong>Social Media kit:</strong> Summaries for LinkedIn and Twitter.</li>
+      </ol>
+
+      <div class="callout callout-tip">
+        <div class="callout-title">Pro Tip</div>
+        <strong>Pro Tip:</strong> Use the interactive website to verify that the numbers in the "Results" section match the raw data visualization. It's a great sanity check!
+      </div>
+
+      <hr>
+
+      <h2>7. Reference Material</h2>
+
+      <h3>7.1 Appendix: File Structure</h3>
+      <pre><code>/
+├── workflow/
+│   ├── agents/    # Specialized AI instructions
+│   ├── skills/    # Reusable code libraries (Python/LaTeX)
+│   ├── prompts/   # Quality standards & checklists
+│   └── scripts/   # Phase-specific execution logic (01-07)
+├── exam_paper/    # The generated output folder
+│   ├── paper.pdf  # Main Deliverable
+│   ├── figures/   # Vector PDFs
+│   └── post_paper_products/ # Slides & Website
+└── sample/        # Testing datasets</code></pre>
+
+      <h3>7.2 Troubleshooting Guide</h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Issue</th>
+            <th>Potential Cause</th>
+            <th>Recommended Fix</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>LaTeX Compilation Error</strong></td>
+            <td>Missing figure or special character ($ or %)</td>
+            <td>Check <code>paper.log</code> and verify all figure paths in <code>.tex</code>.</td>
+          </tr>
+          <tr>
+            <td><strong>Phase 2 Error</strong></td>
+            <td>Dataset too large or non-numeric data</td>
+            <td>Check <code>data_summary.md</code> for variable type mismatches.</td>
+          </tr>
+          <tr>
+            <td><strong>Agent Refusals</strong></td>
+            <td>Over-sensitive safety filters</td>
+            <td>Ensure your instructions are strictly scientific/medical.</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div class="callout callout-warning">
+        <div class="callout-title">Security First</div>
+        <strong>Security First:</strong> Never store API keys or database credentials in the <code>workflow/</code> folder. Use environment variables for all sensitive configuration.
+      </div>
+    </div>
+  </main>
+  
+  <footer class="footer">
+    <div class="footer-content">
+      <p>&copy; 2026 Personal Website. Built with Gemini CLI.</p>
+      <ul class="footer-links">
+        <li><a href="https://github.com/katsaxton/bst236website" target="_blank" rel="noopener noreferrer">GitHub</a></li>
+        <li><a href="https://arxiv.org" target="_blank" rel="noopener noreferrer">arXiv</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
