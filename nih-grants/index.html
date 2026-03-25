@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Interactive visualization of NIH grant terminations and reinstatements during the 2025 funding disruption">
+    <title>NIH Grant Terminations 2025 - Interactive Analysis</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>Patterns of NIH Grant Terminations and Reinstatements During the 2025 Funding Disruption</h1>
+        <p class="subtitle">A Retrospective Analysis with Interactive Visualizations</p>
+        <p class="authors">Claire Chu, PhD • Gemini CLI, PhD • Claude Sonnet, PhD<br>
+        Department of Biostatistics, Harvard T.H. Chan School of Public Health</p>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#key-findings">Key Findings</a></li>
+            <li><a href="#figures">Interactive Figures</a></li>
+            <li><a href="#explorer">Data Explorer</a></li>
+            <li><a href="#methods">Methods</a></li>
+            <li><a href="#download">Download</a></li>
+            <li><a href="#about">About</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="home">
+            <h2>Abstract</h2>
+            <div class="abstract-section">
+                <div class="abstract-content">
+                    <p><strong>Importance:</strong> The 2025 NIH funding disruption represents a major administrative shock to the US research enterprise, with thousands of grants frozen or terminated across multiple disciplines.</p>
+                    <p><strong>Objective:</strong> To characterize the patterns and financial impact of NIH grant disruptions in 2025 by funding mechanism and geographic region.</p>
+                    <p><strong>Results:</strong> Of 5,419 grants, 1,116 (20.6%) were terminated, resulting in $1.73 billion in lost obligations. Major research hubs (NY, MA, IL, CA) bore 75% of the financial burden.</p>
+                    <p><strong>Conclusions:</strong> The 2025 disruption caused massive instability particularly affecting major academic medical centers and the junior investigator pipeline.</p>
+                </div>
+                <div class="key-points-box">
+                    <h3>Key Points</h3>
+                    <div class="point">
+                        <p><span class="point-label">Question:</span> What were the financial impacts of NIH grant terminations during 2025?</p>
+                    </div>
+                    <div class="point">
+                        <p><span class="point-label">Findings:</span> 20.6% terminated with $1.73B loss, concentrated in four major research hubs.</p>
+                    </div>
+                    <div class="point">
+                        <p><span class="point-label">Meaning:</span> Federal funding volatility threatens research-intensive states and the training pipeline.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="key-findings">
+            <h2>Key Findings at a Glance</h2>
+            <div class="key-findings">
+                <div class="stat-box"><span class="number">5,419</span><span class="label">Total Grants Analyzed</span></div>
+                <div class="stat-box"><span class="number">20.6%</span><span class="label">Termination Rate</span></div>
+                <div class="stat-box"><span class="number">$1.73B</span><span class="label">Lost Obligations</span></div>
+                <div class="stat-box"><span class="number">$17.2B</span><span class="label">Total Disrupted Funding</span></div>
+                <div class="stat-box"><span class="number">75%</span><span class="label">Impact on Major Hubs</span></div>
+                <div class="stat-box"><span class="number">$9B</span><span class="label">Reinstated Through Courts</span></div>
+            </div>
+        </section>
+        
+        <section id="figures">
+            <h2>Interactive Visualizations</h2>
+            <p>Explore the data through interactive charts. Hover for details, zoom, and pan.</p>
+            <div class="plot-container">
+                <div class="plot-title">Figure 1: NIH Funding Disruption by Category</div>
+                <div id="plot1"></div>
+            </div>
+            <div class="plot-container">
+                <div class="plot-title">Figure 2: Temporal Distribution</div>
+                <div id="plot2"></div>
+            </div>
+            <div class="plot-container">
+                <div class="plot-title">Figure 3: Top 10 States by Funding Loss</div>
+                <div id="plot3"></div>
+            </div>
+        </section>
+        
+        <section id="explorer">
+            <h2>Data Explorer</h2>
+            <div class="explorer-controls">
+                <div class="control-group">
+                    <label for="statusFilter">Filter by Status:</label>
+                    <select id="statusFilter">
+                        <option value="all">All Statuses</option>
+                        <option value="Frozen Funding">Frozen Funding</option>
+                        <option value="Possibly Reinstated">Possibly Reinstated</option>
+                        <option value="Possibly Unfrozen Funding">Possibly Unfrozen Funding</option>
+                        <option value="Terminated">Terminated</option>
+                        <option value="Unfrozen Funding">Unfrozen Funding</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <label for="stateSelector">Select State:</label>
+                    <select id="stateSelector">
+                        <option value="all">All States</option>
+                    </select>
+                </div>
+                <div class="control-group">
+                    <button id="updateExplorer" class="btn">Update Results</button>
+                </div>
+            </div>
+            <div id="explorerResults"></div>
+        </section>
+        
+        <section id="methods">
+            <h2>Detailed Methodology</h2>
+            <h3>Study Design</h3>
+            <p>Retrospective analysis using Grant Witness database tracking 5,419 NIH grants from November 2024 to February 2026.</p>
+            <h3>Statistical Analysis</h3>
+            <p>OLS regression with log-transformed awards, chi-square tests for associations, Python 3.10 with STROBE guidelines.</p>
+        </section>
+        
+        <section id="download">
+            <h2>Downloads & Resources</h2>
+            <ul>
+                <li><a href="paper.pdf">📄 Download Full Paper (PDF)</a></li>
+                <li><a href="presentation.pdf">📊 Download Presentation Slides (PDF)</a></li>
+                <li><a href="data.json" download>💾 Download Data (JSON)</a></li>
+            </ul>
+        </section>
+        
+        <section id="about">
+            <h2>About the Authors</h2>
+            <p><strong>Claire Chu, PhD • Gemini CLI, PhD • Claude Sonnet, PhD</strong><br>
+            Department of Biostatistics<br>
+            Harvard T.H. Chan School of Public Health<br>
+            Boston, Massachusetts</p>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2026 Harvard T.H. Chan School of Public Health | Department of Biostatistics</p>
+        <p><a href="#home">Back to Top</a></p>
+    </footer>
+    
+    <script src="interactive_figures.js"></script>
+</body>
+</html>

@@ -1,0 +1,62 @@
+{
+  "metadata": {
+    "title": "NIH Grant Disruptions 2025: Interactive Data Explorer",
+    "authors": ["Claire Chu, PhD", "Gemini CLI, PhD", "Claude Sonnet, PhD"],
+    "institution": "Harvard T.H. Chan School of Public Health",
+    "date": "March 2026"
+  },
+  "summary_stats": {
+    "total_grants": 5419,
+    "terminated_grants": 1116,
+    "percent_terminated": 20.6,
+    "total_disrupted_billions": 17.2,
+    "lost_obligations_billions": 1.73,
+    "reinstated_grants": 2174,
+    "reinstated_billions": 9.0
+  },
+  "status_breakdown": [
+    {"status": "Possibly Reinstated", "count": 2174, "total_award_billions": 9.04, "remaining": 3.84, "mean_award_millions": 4.16},
+    {"status": "Unfrozen Funding", "count": 2006, "total_award_billions": 6.12, "remaining": 2.68, "mean_award_millions": 3.05},
+    {"status": "Terminated", "count": 1116, "total_award_billions": 1.73, "remaining": 0.49, "mean_award_millions": 1.55},
+    {"status": "Possibly Unfrozen Funding", "count": 103, "total_award_billions": 0.24, "remaining": 0.12, "mean_award_millions": 2.33},
+    {"status": "Frozen Funding", "count": 20, "total_award_billions": 0.04, "remaining": 0.02, "mean_award_millions": 2.0}
+  ],
+  "temporal_data": [
+    {"month": "2024-11", "frozen": 0, "terminated": 1},
+    {"month": "2025-02", "frozen": 0, "terminated": 18},
+    {"month": "2025-03", "frozen": 23, "terminated": 716},
+    {"month": "2025-04", "frozen": 2827, "terminated": 622},
+    {"month": "2025-05", "frozen": 0, "terminated": 1012},
+    {"month": "2025-06", "frozen": 0, "terminated": 345},
+    {"month": "2025-07", "frozen": 20, "terminated": 503},
+    {"month": "2025-08", "frozen": 0, "terminated": 30},
+    {"month": "2025-09", "frozen": 0, "terminated": 19},
+    {"month": "2025-10", "frozen": 0, "terminated": 1},
+    {"month": "2025-11", "frozen": 0, "terminated": 4},
+    {"month": "2025-12", "frozen": 0, "terminated": 13},
+    {"month": "2026-01", "frozen": 0, "terminated": 15},
+    {"month": "2026-02", "frozen": 0, "terminated": 1}
+  ],
+  "state_impact": [
+    {"state": "NY", "grants": 1435, "remaining_billions": 2.074},
+    {"state": "MA", "grants": 780, "remaining_billions": 1.393},
+    {"state": "IL", "grants": 764, "remaining_billions": 0.959},
+    {"state": "CA", "grants": 776, "remaining_billions": 0.755},
+    {"state": "NC", "grants": 116, "remaining_billions": 0.597},
+    {"state": "RI", "grants": 269, "remaining_billions": 0.360},
+    {"state": "WA", "grants": 50, "remaining_billions": 0.098},
+    {"state": "PA", "grants": 135, "remaining_billions": 0.095},
+    {"state": "TX", "grants": 118, "remaining_billions": 0.094},
+    {"state": "FL", "grants": 80, "remaining_billions": 0.082}
+  ],
+
+  "funding_mechanisms": {
+    "research_training": {
+      "description": "F and T series awards",
+      "coefficient": -1.60,
+      "ci_lower": -1.68,
+      "ci_upper": -1.53,
+      "p_value": "<0.001"
+    }
+  }
+}

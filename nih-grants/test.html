@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Data Load Test</title>
+    <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
+</head>
+<body>
+    <h1>Testing Data Load</h1>
+    <div id="status">Loading...</div>
+    <div id="plot1" style="width:600px;height:400px;"></div>
+    
+    <h2>Testing Downloads</h2>
+    <ul>
+        <li><a href="paper.pdf">📄 Download Paper (PDF)</a></li>
+        <li><a href="presentation.pdf">📊 Download Slides (PDF)</a></li>
+    </ul>
+    
+    <script>
+    fetch('data.json')
+        .then(response => response.json())
+        .then(data => {
+            document.getElementById('status').innerHTML = 'Data loaded successfully! ✓<br>Status breakdown items: ' + data.status_breakdown.length;
+            
+            // Test plot
+            const statuses = data.status_breakdown.map(d => d.status);
+            const awards = data.status_breakdown.map(d => d.total_award_billions);
+            
+            const trace = {
+                x: statuses,
+                y: awards,
+                type: 'bar'
+            };
+            
+            Plotly.newPlot('plot1', [trace], {
+                title: 'Test Plot',
+                xaxis: {tickangle: -45}
+            });
+        })
+        .catch(error => {
+            document.getElementById('status').innerHTML = 'Error: ' + error.message;
+        });
+    </script>
+</body>
+</html>
