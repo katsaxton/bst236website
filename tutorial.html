@@ -87,6 +87,92 @@
       color: var(--text-light);
       margin: var(--spacing-md) 0;
     }
+
+    /* Visual Enhancements */
+    .architecture-container {
+      margin: var(--spacing-lg) 0;
+      display: flex;
+      flex-direction: column;
+      gap: var(--spacing-sm);
+    }
+    .layer {
+      padding: var(--spacing-md);
+      border-radius: var(--border-radius);
+      text-align: center;
+      font-weight: bold;
+      color: white;
+      box-shadow: var(--shadow-sm);
+      transition: var(--transition);
+    }
+    .layer:hover {
+      transform: scale(1.02);
+      box-shadow: var(--shadow-md);
+    }
+    .layer-agent { background-color: #4a90e2; }
+    .layer-skills { background-color: #50e3c2; color: #333; }
+    .layer-prompts { background-color: #f5a623; }
+    
+    .flowchart {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--spacing-sm);
+      margin: var(--spacing-lg) 0;
+      justify-content: center;
+    }
+    .flow-step {
+      background: var(--bg-light);
+      border: 1px solid var(--border-light);
+      padding: var(--spacing-sm) var(--spacing-md);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .flow-step:not(:last-child)::after {
+      content: "→";
+      margin-left: var(--spacing-sm);
+      color: var(--text-lighter);
+    }
+    @media (max-width: 600px) {
+      .flow-step:not(:last-child)::after {
+        content: "↓";
+        display: block;
+        margin-left: 0;
+        margin-top: var(--spacing-xs);
+        text-align: center;
+        width: 100%;
+      }
+      .flowchart { flex-direction: column; align-items: center; }
+    }
+
+    .terminal-window {
+      background: #1e1e1e;
+      border-radius: 6px;
+      overflow: hidden;
+      margin-bottom: var(--spacing-md);
+      box-shadow: var(--shadow-md);
+    }
+    .terminal-header {
+      background: #333;
+      padding: 6px 12px;
+      display: flex;
+      gap: 6px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; }
+    .dot-red { background: #ff5f56; }
+    .dot-yellow { background: #ffbd2e; }
+    .dot-green { background: #27c93f; }
+    .terminal-content {
+      padding: var(--spacing-md);
+      color: #f8f8f2;
+      font-family: 'Courier New', Courier, monospace;
+    }
+    .terminal-content pre {
+      background: transparent;
+      padding: 0;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -164,8 +250,18 @@
 
       <h4>2.2.1 Python Environment (3.9+)</h4>
       <p>The orchestrator and analysis scripts require standard scientific computing packages.</p>
-      <pre><code># Install required Python packages
+      
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code># Install required Python packages
 pip install pandas numpy scipy statsmodels matplotlib seaborn scikit-learn openpyxl</code></pre>
+        </div>
+      </div>
 
       <h4>2.2.2 LaTeX Distribution</h4>
       <p>This is required for generating the final publication-ready PDF.</p>
@@ -177,19 +273,47 @@ pip install pandas numpy scipy statsmodels matplotlib seaborn scikit-learn openp
 
       <h4>2.2.3 AI Assistant (Optional)</h4>
       <p>If you wish to use the multi-agent system via a CLI assistant, we recommend the GitHub Copilot CLI:</p>
-      <pre><code>gh extension install github/gh-copilot
+      
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code>gh extension install github/gh-copilot
 gh auth login</code></pre>
+        </div>
+      </div>
 
       <h3>2.3 Repository Setup</h3>
       <ol>
         <li><strong>Clone the Workflow:</strong>
-          <pre><code>git clone https://github.com/your-squad/midterm-project.git
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="terminal-content">
+              <pre><code>git clone https://github.com/your-squad/midterm-project.git
 cd midterm-project</code></pre>
+            </div>
+          </div>
         </li>
         <li><strong>Verify Installation:</strong>
           <p>Run a quick sanity check to ensure all dependencies are met:</p>
-          <pre><code>python -c "import pandas, statsmodels, matplotlib; print('✅ Python OK')"
+          <div class="terminal-window">
+            <div class="terminal-header">
+              <div class="dot dot-red"></div>
+              <div class="dot dot-yellow"></div>
+              <div class="dot dot-green"></div>
+            </div>
+            <div class="terminal-content">
+              <pre><code>python -c "import pandas, statsmodels, matplotlib; print('✅ Python OK')"
 pdflatex --version | head -n 1</code></pre>
+            </div>
+          </div>
         </li>
       </ol>
 
@@ -204,15 +328,33 @@ pdflatex --version | head -n 1</code></pre>
 
       <h3>3.1 Method 1: The Python Orchestrator (Script Mode)</h3>
       <p>The fastest way to execute the workflow is via the Python orchestrator. This is recommended for the "90-minute exam" scenario where stability is key. Place your datasets in a folder (e.g., <code>exam_data/</code>) and run:</p>
-      <pre><code># Run the complete end-to-end workflow
+      
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code># Run the complete end-to-end workflow
 python workflow/orchestrator.py exam_data/ -o exam_paper/</code></pre>
+        </div>
+      </div>
 
       <h3>3.2 Method 2: The AI CLI (Agent Mode)</h3>
       <p>For interactive control or fine-tuning, you can use an AI CLI (like <strong>Gemini CLI</strong> or <strong>Claude Code</strong>) to trigger the agents directly. This allows the AI to "think" through each step and handle complex edge cases that a static script might miss.</p>
 
       <p><strong>The "Power Prompt":</strong></p>
       <p>Simply point the AI to the <code>workflow/</code> folder and issue a high-level directive:</p>
-      <pre><code>"Use the multi-agent workflow system in workflow/ to generate a JAMA Network Open paper 
+      
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code>"Use the multi-agent workflow system in workflow/ to generate a JAMA Network Open paper 
 from the data in exam_data/. 
 
 1. Follow the Agent definitions in workflow/agents/
@@ -220,6 +362,8 @@ from the data in exam_data/.
 3. Adhere to the Quality Standards in workflow/prompts/
 
 Deliver the final PDF to the exam_paper/ directory."</code></pre>
+        </div>
+      </div>
 
       <div class="callout callout-tip">
         <div class="callout-title">Pro Tip</div>
@@ -237,6 +381,12 @@ Deliver the final PDF to the exam_paper/ directory."</code></pre>
 
       <h3>4.1 The 3-Layer Design Pattern</h3>
       <p>Our workflow is built on a modular "3-layer cake" architecture, ensuring that domain expertise is separated from technical implementation.</p>
+
+      <div class="architecture-container">
+        <div class="layer layer-agent">Agent Layer (The Brains)</div>
+        <div class="layer layer-skills">Skills Layer (The Hands)</div>
+        <div class="layer layer-prompts">Prompts Layer (The Rulebook)</div>
+      </div>
 
       <h4>4.1.1 Layer 1: The Agent Layer (<code>workflow/agents/</code>)</h4>
       <p>Specialized AI entities with specific "personalities" and goals.</p>
@@ -278,6 +428,16 @@ Deliver the final PDF to the exam_paper/ directory."</code></pre>
       <h2>5. The 7-Phase Execution Loop</h2>
 
       <p>The <code>orchestrator.py</code> script executes the following sequence:</p>
+
+      <div class="flowchart">
+        <div class="flow-step">1. Exploration</div>
+        <div class="flow-step">2. Analysis</div>
+        <div class="flow-step">3. Visualization</div>
+        <div class="flow-step">4. Literature</div>
+        <div class="flow-step">5. Writing</div>
+        <div class="flow-step">6. Review</div>
+        <div class="flow-step">7. Production</div>
+      </div>
 
       <table>
         <thead>
@@ -343,8 +503,18 @@ Deliver the final PDF to the exam_paper/ directory."</code></pre>
 
       <h3>6.2 Pattern: Contractor Mode (Manual Intervention)</h3>
       <p>While <code>orchestrator.py</code> handles the "Big Picture," users can use the CLI to drop into a specific phase.</p>
-      <pre><code># Example: Only regenerate figures if the data changed
+      
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code># Example: Only regenerate figures if the data changed
 python workflow/03_visualizer.py exam_data/ exam_paper/</code></pre>
+        </div>
+      </div>
 
       <h3>6.3 Pattern: Post-Paper Products</h3>
       <p>Once the paper is finalized, the <strong>Post-Production Agent</strong> automatically converts the LaTeX content into:</p>
@@ -364,7 +534,14 @@ python workflow/03_visualizer.py exam_data/ exam_paper/</code></pre>
       <h2>7. Reference Material</h2>
 
       <h3>7.1 Appendix: File Structure</h3>
-      <pre><code>/
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="dot dot-red"></div>
+          <div class="dot dot-yellow"></div>
+          <div class="dot dot-green"></div>
+        </div>
+        <div class="terminal-content">
+          <pre><code>/
 ├── workflow/
 │   ├── agents/    # Specialized AI instructions
 │   ├── skills/    # Reusable code libraries (Python/LaTeX)
@@ -375,6 +552,8 @@ python workflow/03_visualizer.py exam_data/ exam_paper/</code></pre>
 │   ├── figures/   # Vector PDFs
 │   └── post_paper_products/ # Slides & Website
 └── sample/        # Testing datasets</code></pre>
+        </div>
+      </div>
 
       <h3>7.2 Troubleshooting Guide</h3>
       <table>
